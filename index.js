@@ -1,5 +1,4 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const path = require('path');
 const mongoose = require('mongoose');
 const fs = require('fs');
 require('dotenv').config();
@@ -15,7 +14,6 @@ client.commands = new Collection();
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
     const command = require(`./commands/${file}`);
     client.commands.set(command.data.name, command);
 }
