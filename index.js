@@ -1,4 +1,5 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const path = require('path');
 const mongoose = require('mongoose');
 const fs = require('fs');
 require('dotenv').config();
