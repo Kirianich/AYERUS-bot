@@ -1,13 +1,19 @@
-const { REST, Routes } = require('discord.js');
-require('dotenv').config();
 const fs = require('fs');
+const { REST, Routes } = require('discord.js');
+const { readdirSync } = require('fs')
+require('dotenv').config();
+
 
 const commands = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
-    commands.push(command.data.toJSON());
+    if (command.data) {
+        commands.push(command.data.toJSON());
+    } else {
+        console.warn(`[WARNING] The command file '${file}' is missing 'data' or improperly structured.`);
+    }
 }
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
