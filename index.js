@@ -16,7 +16,7 @@ const client = new Client({
 client.commands = new Collection();
 
 for (const file of commandFiles) {
-    const filepath = path.join(commandsPath, file);
+    const filePath = path.join(commandsPath, file);
     const command = require(filePath);
 
  // Debugging: Log the loaded command
