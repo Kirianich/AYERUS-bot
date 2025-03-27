@@ -1,3 +1,6 @@
+const path = require('path'); // defining path
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const mongoose = require('mongoose');
 const fs = require('fs');
@@ -12,9 +15,18 @@ const client = new Client({
 
 client.commands = new Collection();
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
+    const filepath = path.join(commandsPath, file);
+    const command = require(filePath);
+
+ // Debugging: Log the loaded command
+    console.log(`🔍 Loading command: ${file} ->`, command);
+
+    if (!command || !command.data || !command.data.name) {
+        console.error(`❌ Command file '${file}' is missing "data.name"`);
+        continue;
+    }
+    
     client.commands.set(command.data.name, command);
 }
 
