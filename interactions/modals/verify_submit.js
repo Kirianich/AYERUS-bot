@@ -1,53 +1,74 @@
 const { Events } = require('discord.js');
 const axios = require('axios');
+const mongoose = require('mongoose');
+const VerifiedUser = require('../models/VerifiedUser'); // Schema for storing verified users
+const GuildSettings = require('../models/GuildSettings'); // Stores guild-specific settings
 
 module.exports = {
     customId: 'verification_modal',
     async execute(interaction) {
-            const username = interaction.fields.getTextInputValue('minecraft_username');
-            const discordId = interaction.user.id;
+        const username = interaction.fields.getTextInputValue('minecraft_username');
+        const discordId = interaction.user.id;
 
-            await interaction.reply({ content: '🔍 Проверяю, пожалуйста подождите...', ephemeral: true });
+        await interaction.reply({ content: '🔍 Проверяю, пожалуйста подождите...', ephemeral: true });
 
-            try {
-                // Call Hypixel API
-                const response = await axios.get(`https://api.hypixel.net/player?key=YOUR_HYPIXEL_API_KEY&name=${username}`);
+        try {
+            // Check if user is already verified
+            const existingUser = await VerifiedUser.findOne({ discordId });
+            if (existingUser) {
+                return interaction.editReply({ content: '✅ Вы уже верифицированы!', ephemeral: true });
+            }
 
-                if (!response.data.success) {
+            // Call Hypixel API
+            const response = await axios.get(`https://api.hypixel.net/player?key=${process.env.HYPIXEL_API_KEY}&name=${username}`);
+            if (!response.data.success) {
                 return interaction.editReply({ content: '❌ Ошибка API Hypixel, попробуйте позже.', ephemeral: true });
             }
-                
-                const playerData = response.data.player;
 
-                if (!playerData) {
-                    return interaction.editReply({ content: '❌ Игрок с таким ником не найден на Hypixel!', ephemeral: true });
-                }
+            const playerData = response.data.player;
+            if (!playerData) {
+                return interaction.editReply({ content: '❌ Игрок с таким ником не найден на Hypixel!', ephemeral: true });
+            }
 
-               // Ensure socialMedia exists
+            // Ensure socialMedia exists
             const linkedDiscord = playerData?.socialMedia?.links?.DISCORD;
             if (!linkedDiscord) {
                 return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.', ephemeral: true });
             }
 
-                // Compare Discord IDs
-                if (playerData.socialMedia.links.DISCORD !== interaction.user.tag) {
-                    return interaction.editReply({ content: '❌ Ваш привязанный Discord не соответствует текущему аккаунту!', ephemeral: true });
-                }
+            // Compare Discord IDs (supports new username system)
+            const normalizedDiscord = interaction.user.globalName || interaction.user.tag;
+            if (linkedDiscord !== normalizedDiscord) {
+                return interaction.editReply({ content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`, ephemeral: true });
+            }
 
-                // Assign Verified Role
-                const role = interaction.guild.roles.cache.find(r => r.name === 'Verified');
-                const member = interaction.guild.members.cache.get(discordId);
+            // Fetch the verified role from MongoDB
+            const guildSettings = await GuildSettings.findOne({ guildId: interaction.guild.id });
+            if (!guildSettings || !guildSettings.verifiedRole) {
+                return interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`', ephemeral: true });
+            }
 
-                if (role && member) {
-                    await member.roles.add(role);
-                    return interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!', ephemeral: true });
-                } else {
-                    return interaction.editReply({ content: '❌ Не могу назначить нужную роль.', ephemeral: true });
-                }
+            const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
+            const member = interaction.guild.members.cache.get(discordId);
 
-            } catch (error) {
-                console.error(error);
-                return interaction.editReply({ content: '❌ Ошибка при получении данных. Попробуйте позже.', ephemeral: true });
+            if (role && member) {
+                await member.roles.add(role);
+
+                // Save user to the database
+                await VerifiedUser.create({
+                    discordId,
+                    username,
+                    guildId: interaction.guild.id
+                });
+
+                return interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!', ephemeral: true });
+            } else {
+                return interaction.editReply({ content: '❌ Не удалось назначить роль.', ephemeral: true });
+            }
+
+        } catch (error) {
+            console.error(error);
+            return interaction.editReply({ content: '❌ Ошибка при получении данных. Попробуйте позже.', ephemeral: true });
         }
     }
 };
