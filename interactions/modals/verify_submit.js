@@ -12,16 +12,22 @@ module.exports = {
             try {
                 // Call Hypixel API
                 const response = await axios.get(`https://api.hypixel.net/player?key=YOUR_HYPIXEL_API_KEY&name=${username}`);
+
+                if (!response.data.success) {
+                return interaction.editReply({ content: '❌ Ошибка API Hypixel, попробуйте позже.', ephemeral: true });
+            }
+                
                 const playerData = response.data.player;
 
                 if (!playerData) {
                     return interaction.editReply({ content: '❌ Игрок с таким ником не найден на Hypixel!', ephemeral: true });
                 }
 
-                // Check if the player has linked their Discord
-                if (!playerData.socialMedia || !playerData.socialMedia.links || !playerData.socialMedia.links.DISCORD) {
-                    return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.', ephemeral: true });
-                }
+               // Ensure socialMedia exists
+            const linkedDiscord = playerData?.socialMedia?.links?.DISCORD;
+            if (!linkedDiscord) {
+                return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.', ephemeral: true });
+            }
 
                 // Compare Discord IDs
                 if (playerData.socialMedia.links.DISCORD !== interaction.user.tag) {
