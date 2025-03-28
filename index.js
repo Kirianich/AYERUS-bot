@@ -13,6 +13,7 @@ const client = new Client({
     ]
 });
 
+// Load Commands handlers
 client.commands = new Collection();
 
 for (const file of commandFiles) {
@@ -28,6 +29,13 @@ for (const file of commandFiles) {
     }
     
     client.commands.set(command.data.name, command);
+}
+
+// Load Button handlers
+client buttonFiles = fs.readdirSync('./interactions/buttons').filter(file => file.endsWith('.js'));
+for (const file of buttonFiles) {
+    const button = require ('./interactions/buttons/$(file)');
+    client.buttons.set(button.customId, button);
 }
 
 client.once('ready', async () => {
