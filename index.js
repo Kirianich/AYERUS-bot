@@ -32,6 +32,8 @@ for (const file of commandFiles) {
 }
 
 // Load Button handlers
+client.buttons = new Collection();
+
 const buttonFiles = fs.readdirSync('./interactions/buttons').filter(file => file.endsWith('.js'));
 for (const file of buttonFiles) {
     const button = require(`./interactions/buttons/${file}`);
