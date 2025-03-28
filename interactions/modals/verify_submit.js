@@ -2,11 +2,8 @@ const { Events } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
-    name: Events.InteractionCreate,
+    customId: 'verification_modal',
     async execute(interaction) {
-        if (!interaction.isModalSubmit()) return;
-
-        if (interaction.customId === 'verification_modal') {
             const username = interaction.fields.getTextInputValue('minecraft_username');
             const discordId = interaction.user.id;
 
@@ -45,7 +42,6 @@ module.exports = {
             } catch (error) {
                 console.error(error);
                 return interaction.editReply({ content: '❌ Ошибка при получении данных. Попробуйте позже.', ephemeral: true });
-            }
         }
     }
 };
