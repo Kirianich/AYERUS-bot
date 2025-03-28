@@ -1,10 +1,9 @@
- const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-    discordId: String,
-    minecraftUUID: String,
-    ign: String,
-    guildId: String
+const VerifiedUserSchema = new mongoose.Schema({
+    discordId: { type: String, required: true, unique: true },
+    username: { type: String, required: true },
+    guildId: { type: String, required: true }
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('VerifiedUser', VerifiedUserSchema);
