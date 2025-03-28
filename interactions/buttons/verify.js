@@ -2,27 +2,25 @@ const { Events, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle
 const axios = require('axios');
 
 module.exports = {
-    name: Events.InteractionCreate,
+    customId: 'verify_button',
     async execute(interaction) {
-        if (interaction.isButton()) {
-            if (interaction.customId === 'verify_button') {
-                // Show a modal to ask for Minecraft username
-                const modal = new ModalBuilder()
-                    .setCustomId('verification_modal')
-                    .setTitle('Minecraft Verification');
+            // Show a modal to ask for Minecraft username
+             const modal = new ModalBuilder()
+                  .setCustomId('verification_modal')
+                  .setTitle('Minecraft Verification');
 
-                const usernameInput = new TextInputBuilder()
-                    .setCustomId('minecraft_username')
-                    .setLabel('Введите Ваш ник в игре:')
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
+              const usernameInput = new TextInputBuilder()
+                   .setCustomId('minecraft_username')
+                   .setLabel('Введите Ваш ник в игре:')
+                  .setStyle(TextInputStyle.Short)
+                   .setRequired(true);
 
-                const row = new ActionRowBuilder().addComponents(usernameInput);
-                modal.addComponents(row);
+              const row = new ActionRowBuilder().addComponents(usernameInput);
+               modal.addComponents(row);
 
-                await interaction.showModal(modal);
-            }
-        }
+               await interaction.showModal(modal);
+            
+        
 
         if (interaction.isModalSubmit()) {
             if (interaction.customId === 'verification_modal') {
