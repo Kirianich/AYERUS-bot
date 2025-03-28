@@ -1,8 +1,8 @@
 const { Events } = require('discord.js');
 const axios = require('axios');
 const mongoose = require('mongoose');
-const VerifiedUser = require('../models/User'); // Schema for storing verified users
-const GuildSettings = require('../models/GuildSettings'); // Stores guild-specific settings
+const VerifiedUser = require('../models/User.js'); // Schema for storing verified users
+const GuildSettings = require('../models/GuildSettings.js'); // Stores guild-specific settings
 
 module.exports = {
     customId: 'verification_modal',
