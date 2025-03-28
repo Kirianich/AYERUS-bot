@@ -37,10 +37,14 @@ module.exports = {
                 return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.', ephemeral: true });
             }
 
-            // Compare Discord IDs (supports new username system)
-            const normalizedDiscord = interaction.user.globalName || interaction.user.tag;
-            if (linkedDiscord !== normalizedDiscord) {
-                return interaction.editReply({ content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`, ephemeral: true });
+            // Normalize Discord names for comparison
+            const discordUsername = interaction.user.username; // New format (since Discord removed discriminators)
+            const discordTag = interaction.user.tag; // Old format with discriminator (e.g., User#1234)
+
+            // Check if the linked Discord matches either format
+            if (linkedDiscord !== discordUsername && linkedDiscord !== discordTag) {
+                return interaction.editReply({ 
+                content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`, ephemeral: true });
             }
 
             // Fetch the verified role from MongoDB
