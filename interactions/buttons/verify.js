@@ -12,7 +12,7 @@ module.exports = {
               const usernameInput = new TextInputBuilder()
                    .setCustomId('minecraft_username')
                    .setLabel('Введите Ваш ник в игре:')
-                  .setStyle(TextInputStyle.Short)
+                   .setStyle(TextInputStyle.Short)
                    .setRequired(true);
 
               const row = new ActionRowBuilder().addComponents(usernameInput);
@@ -23,7 +23,7 @@ module.exports = {
         
 
         if (interaction.isModalSubmit()) {
-            if (interaction.customId === 'verification_modal') {
+            if (interaction.customId === 'verification_modal') 
                 const username = interaction.fields.getTextInputValue('minecraft_username');
                 const discordId = interaction.user.id;
 
@@ -63,7 +63,7 @@ module.exports = {
                     console.error(error);
                     return interaction.editReply({ content: '❌ Error fetching data. Please try again later.', ephemeral: true });
                 }
-            }
+            
         }
     }
 };
