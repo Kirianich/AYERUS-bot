@@ -6,7 +6,6 @@ const GuildSettings = require('../../models/GuildSettings'); // Stores guild-spe
 
 module.exports = {
     customId: 'verification_modal',
-    console.log('Modal interaction received:', interaction.customId);
     async execute(interaction) {
         const username = interaction.fields.getTextInputValue('minecraft_username');
         console.log('Received username:', username);
@@ -16,7 +15,7 @@ module.exports = {
 
         try {
             // Check if user is already verified
-            const existingUser = await VerifiedUser.findOne({ discordId });
+            const existingUser = await User.findOne({ discordId });
             if (existingUser) {
                 return interaction.editReply({ content: '✅ Вы уже верифицированы!', ephemeral: true });
             }
@@ -51,13 +50,15 @@ module.exports = {
             }
 
             const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
-            const member = interaction.guild.members.cache.get(discordId);
+            const member = interaction.guild.members.cache.fetch(discordId);
+
+
 
             if (role && member) {
                 await member.roles.add(role);
 
                 // Save user to the database
-                await VerifiedUser.create({
+                await User.create({
                     discordId,
                     username,
                     guildId: interaction.guild.id
