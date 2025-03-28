@@ -15,10 +15,10 @@ module.exports = {
                    .setStyle(TextInputStyle.Short)
                    .setRequired(true);
 
-              const row = new ActionRowBuilder().addComponents(usernameInput);
-               modal.addComponents(row);
+            const row = new ActionRowBuilder().addComponents(usernameInput);
+            modal.addComponents(row);
 
-               await interaction.showModal(modal);
+            await interaction.showModal(modal);
             
         
 
