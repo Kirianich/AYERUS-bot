@@ -37,11 +37,19 @@ client.once('ready', async () => {
 });
 
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return;
-    
-    const command = client.commands.get(interaction.commandName);
-    if (command) {
-        await command.execute(interaction);
+if (interaction.isCommand()) {
+        const command = client.commands.get(interaction.commandName);
+        if (command) await command.execute(interaction);
+    } else if (interaction.isButton()) {
+        const button = client.buttons.get(interaction.customId);
+        if (button) {
+            try {
+                await button.execute(interaction);
+            } catch (error) {
+                console.error(`Error executing button ${interaction.customId}:`, error);
+                await interaction.reply({ content: 'There was an error handling this button.', ephemeral: true });
+            }
+        }
     }
 });
 
