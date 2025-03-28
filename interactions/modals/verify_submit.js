@@ -8,6 +8,7 @@ module.exports = {
     customId: 'verification_modal',
     async execute(interaction) {
         const username = interaction.fields.getTextInputValue('minecraft_username');
+        console.log('Received username:', username);
         const discordId = interaction.user.id;
 
         await interaction.reply({ content: '🔍 Проверяю, пожалуйста подождите...', ephemeral: true });
