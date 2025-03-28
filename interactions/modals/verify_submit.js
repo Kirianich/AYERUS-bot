@@ -3,10 +3,10 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const User = require('../../models/User'); // Schema for storing verified users
 const GuildSettings = require('../../models/GuildSettings'); // Stores guild-specific settings
-console.log('Modal interaction received:', interaction.customId);
 
 module.exports = {
     customId: 'verification_modal',
+    console.log('Modal interaction received:', interaction.customId);
     async execute(interaction) {
         const username = interaction.fields.getTextInputValue('minecraft_username');
         console.log('Received username:', username);
