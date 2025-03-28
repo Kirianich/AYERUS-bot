@@ -3,6 +3,7 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const User = require('../../models/User'); // Schema for storing verified users
 const GuildSettings = require('../../models/GuildSettings'); // Stores guild-specific settings
+console.log('Modal interaction received:', interaction.customId);
 
 module.exports = {
     customId: 'verification_modal',
