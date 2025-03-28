@@ -8,8 +8,8 @@ module.exports = {
     customId: 'verification_modal',
     async execute(interaction) {
         const username = interaction.fields.getTextInputValue('minecraft_username');
-        console.log('Received username:', username);
         const discordId = interaction.user.id;
+        const discordUsername = interaction.user.username; // New format (since Discord removed discriminators)
 
         await interaction.reply({ content: '🔍 Проверяю, пожалуйста подождите...', ephemeral: true });
 
@@ -37,12 +37,8 @@ module.exports = {
                 return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.', ephemeral: true });
             }
 
-            // Normalize Discord names for comparison
-            const discordUsername = interaction.user.username; // New format (since Discord removed discriminators)
-            const discordTag = interaction.user.tag; // Old format with discriminator (e.g., User#1234)
-
             // Check if the linked Discord matches either format
-            if (linkedDiscord !== discordUsername && linkedDiscord !== discordTag) {
+            if (linkedDiscord !== discordUsername) {
                 return interaction.editReply({ 
                 content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`, ephemeral: true });
             }
