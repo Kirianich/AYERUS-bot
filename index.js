@@ -40,6 +40,17 @@ for (const file of buttonFiles) {
     client.buttons.set(button.customId, button);
 }
 
+client.modals = new Collection();
+
+// Load modal interactions
+const modalPath = path.join(__dirname, 'interactions/modals');
+const modalFiles = fs.readdirSync(modalPath).filter(file => file.endsWith('.js'));
+
+for (const file of modalFiles) {
+    const modal = require(`./interactions/modals/${file}`);
+    client.modals.set(modal.customId, modal);
+}
+
 client.once('ready', async () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
     await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -60,6 +71,16 @@ if (interaction.isCommand()) {
                 await interaction.reply({ content: 'There was an error handling this button.', ephemeral: true });
             }
         }
+    } else if (!interaction.isModalSubmit()) return;
+
+    const modal = client.modals.get(interaction.customId);
+    if (!modal) return;
+
+    try {
+        await modal.execute(interaction);
+    } catch (error) {
+        console.error(error);
+        await interaction.reply({ content: '❌ Ошибка обработки модального окна.', ephemeral: true });
     }
 });
 
