@@ -42,5 +42,4 @@ module.exports = {
         } catch (error) {
             console.error(error);
             await interaction.reply({ content: `❌ Failed to send message to ${channel}`, ephemeral: true });
-        }
-    };
+        };
