@@ -14,7 +14,7 @@ module.exports = {
             return interaction.reply ({
                 content: '🚫 У вас недостаточно прав для выполнения этой команды.', ephemeral: true
             });
-        }
+        } else {
         const channel = interaction.options.getChannel('channel');
 
         // Create the embed message
@@ -32,8 +32,8 @@ module.exports = {
             new ButtonBuilder()
                 .setCustomId('howto_button')
                 .setLabel('📖 Помощь')
-                .setStyle(ButtonStyle.Secondary)
-        );
+                .setStyle(ButtonStyle.Secondary))
+        };
 
         // Send the embed with buttons
         try {
