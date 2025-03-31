@@ -42,7 +42,7 @@ module.exports = {
                 return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.'});
             }
 
-            const discordUsername = interaction.user.globalName; // New format (since Discord removed discriminators)
+            const discordUsername = interaction.user.username;
             console.log("🔗 Comparing Linked Discord:", linkedDiscord, "with User:", discordUsername);
             if (linkedDiscord !== discordUsername) {
                 return interaction.editReply({ 
