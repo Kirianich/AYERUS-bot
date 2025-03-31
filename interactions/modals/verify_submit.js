@@ -11,7 +11,7 @@ module.exports = {
         const username = interaction.fields.getTextInputValue('minecraft_username');
         const discordId = interaction.user.id;
 
-        await interaction.reply({ content: '🔍 Проверяю, пожалуйста подождите...', ephemeral: true });
+        await interaction.deferReply({ content: '🔍 Проверяю, пожалуйста подождите...', ephemeral: true });
 
         try {
             // Check if user is already verified
