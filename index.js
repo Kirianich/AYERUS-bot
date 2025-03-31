@@ -20,7 +20,7 @@ client.modals = new Collection();
 
 
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endswith('.js'));
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 
 for (const file of commandFiles) {
@@ -34,7 +34,7 @@ for (const file of commandFiles) {
 }
 
 const buttonsPath = path.join(__dirname, 'interactions/buttons');
-const buttonsFiles = fs.readdirSync(buttonsPath).filter(file => file.endswith('.js'));
+const buttonsFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
 
 for (const file of buttonFiles) {
     const button = require(path.join(buttonsPath, file));
