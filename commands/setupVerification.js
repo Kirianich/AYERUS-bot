@@ -32,8 +32,7 @@ module.exports = {
             new ButtonBuilder()
                 .setCustomId('howto_button')
                 .setLabel('📖 Помощь')
-                .setStyle(ButtonStyle.Secondary))
-        };
+                .setStyle(ButtonStyle.Secondary));
 
         // Send the embed with buttons
         try {
