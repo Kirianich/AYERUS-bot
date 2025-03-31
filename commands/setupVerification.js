@@ -43,4 +43,5 @@ module.exports = {
             await interaction.reply({ content: `❌ Failed to send message to ${channel}`, ephemeral: true });
         }
     }
+}
 };
