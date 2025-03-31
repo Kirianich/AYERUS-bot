@@ -29,6 +29,9 @@ module.exports = {
             modal.addComponents(row);
 
             await interaction.showModal(modal);
+        } catch (error) {
+            console.error('❌ Error in verify.js:', error);
+            return interaction.reply({ content: '❌ Ошибка при обработке запроса. Попробуйте позже.', ephemeral: true });
         }
     }
 };
