@@ -6,7 +6,6 @@ module.exports = {
     async execute(interaction) {
             const discordId = interaction.user.id;
 
-            try {
             // Check if the user is already verified in the database
             const existingUser = await User.findOne({ discordId });
 
@@ -30,9 +29,6 @@ module.exports = {
 
             await interaction.showModal(modal);
             }
-        } catch (error) {
-            console.error('❌ Error in verify.js:', error);
-            return interaction.reply({ content: '❌ Ошибка при обработке запроса. Попробуйте позже.', ephemeral: true });
         }
     }
 };
