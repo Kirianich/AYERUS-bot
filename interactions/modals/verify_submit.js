@@ -78,8 +78,11 @@ module.exports = {
             }
 
         } catch (error) {
-            console.error(error);
-            return interaction.editReply({ content: '❌ Ошибка при получении данных. Попробуйте позже.'});
+             if (interaction.replied || interaction.deferred) {
+        await interaction.editReply({ content: '❌ Something went wrong. Try again later.', ephemeral: true });
+    } else {
+        await interaction.reply({ content: '❌ Something went wrong. Try again later.', ephemeral: true });
+    }
         }
     }
 };
