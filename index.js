@@ -1,7 +1,6 @@
 const path = require('path'); // defining path
 const commandsPath = path.join(__dirname, 'commands');
 const fs = require('fs');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -9,79 +8,89 @@ require('dotenv').config();
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
     ]
 });
 
 // Load Commands handlers
 client.commands = new Collection();
-
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-
- // Debugging: Log the loaded command
-    console.log(`🔍 Loading command: ${file} ->`, command);
-
-    if (!command || !command.data || !command.data.name) {
-        console.error(`❌ Command file '${file}' is missing "data.name"`);
-        continue;
-    }
-    
-    client.commands.set(command.data.name, command);
-}
-
-// Load Button handlers
 client.buttons = new Collection();
-
-const buttonFiles = fs.readdirSync('./interactions/buttons').filter(file => file.endsWith('.js'));
-for (const file of buttonFiles) {
-    const button = require(`./interactions/buttons/${file}`);
-    client.buttons.set(button.customId, button);
-}
-
 client.modals = new Collection();
 
-// Load modal interactions
-const modalPath = path.join(__dirname, 'interactions/modals');
-const modalFiles = fs.readdirSync(modalPath).filter(file => file.endsWith('.js'));
+
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endswith('.js'));
+
+
+for (const file of commandFiles) {
+    const command = require(path.join(commandsPath, file));
+    if (command.data && command.execute) {
+        client.commands.set(command.data.name, command);
+        console.log(`✅ Loaded command: ${command.data.name}`);
+    } else {
+        console.warn(`⚠️ Command ${file} is missing "data" or "execute" property.`);
+    }
+}
+
+const buttonsPath = path.join(__dirname, 'interactions/buttons');
+const buttonsFiles = fs.readdirSync(buttonsPath).filter(file => file.endswith('.js'));
+
+for (const file of buttonFiles) {
+    const button = require(path.join(buttonsPath, file));
+    if (button.customId && button.execute) {
+        client.buttons.set(button.customId, button);
+        console.log(`✅ Loaded button: ${button.customId}`);
+    } else {
+        console.warn(`⚠️ Button ${file} is missing "customId" or "execute" property.`);
+    }
+}
+
+const modalsPath = path.join(__dirname, 'interactions/modals');
+const modalFiles = fs.readdirSync(modalsPath).filter(file => file.endsWith('.js'));
 
 for (const file of modalFiles) {
-    const modal = require(`./interactions/modals/${file}`);
-    client.modals.set(modal.customId, modal);
+    const modal = require(path.join(modalsPath, file));
+    if (modal.customId && modal.execute) {
+        client.modals.set(modal.customId, modal);
+        console.log(`✅ Loaded modal: ${modal.customId}`);
+    } else {
+        console.warn(`⚠️ Modal ${file} is missing "customId" or "execute" property.`);
+    }
 }
+
+client.on('interactionCreate', async interaction => {
+    try {
+        if (interaction.isChatInputCommand()) {
+            const command = client.commands.get(interaction.commandName);
+            if (!command) return;
+
+            await command.execute(interaction);
+        }
+
+        else if (interaction.isButton()) {
+            const button = client.buttons.get(interaction.customId);
+            if (!button) return interaction.reply({ content: '❌ Button interaction not found.', ephemeral: true });
+
+            await button.execute(interaction);
+        }
+
+        else if (interaction.isModalSubmit()) {
+            const modal = client.modals.get(interaction.customId);
+            if (!modal) return interaction.reply({ content: '❌ Modal interaction not found.', ephemeral: true });
+
+            await modal.execute(interaction);
+        } catch (error) {
+            console.error('❌ Interaction Error:', error);
+            interaction.reply({ content: '⚠️ Ошибка обработки взаимодействия!', ephemeral: true }).catch(() => {});
+        }
+    });
 
 client.once('ready', async () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
     await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log("✅ Connected to MongoDB");
-});
-
-client.on('interactionCreate', async interaction => {
-if (interaction.isCommand()) {
-        const command = client.commands.get(interaction.commandName);
-        if (command) await command.execute(interaction);
-    } else if (interaction.isButton()) {
-        const button = client.buttons.get(interaction.customId);
-        if (button) {
-            try {
-                await button.execute(interaction);
-            } catch (error) {
-                console.error(`Error executing button ${interaction.customId}:`, error);
-                await interaction.reply({ content: 'There was an error handling this button.', ephemeral: true });
-            }
-        }
-    } else if (!interaction.isModalSubmit()) return;
-
-    const modal = client.modals.get(interaction.customId);
-    if (!modal) return;
-
-    try {
-        await modal.execute(interaction);
-    } catch (error) {
-        console.error(error);
-        await interaction.reply({ content: '❌ Ошибка обработки модального окна.', ephemeral: true });
-    }
-});
+}
 
 client.login(process.env.TOKEN); 
