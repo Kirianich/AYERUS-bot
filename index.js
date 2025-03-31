@@ -1,5 +1,4 @@
 const path = require('path'); // defining path
-const commandsPath = path.join(__dirname, 'commands');
 const fs = require('fs');
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const mongoose = require('mongoose');
