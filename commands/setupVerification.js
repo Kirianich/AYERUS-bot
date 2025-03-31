@@ -15,9 +15,6 @@ module.exports = {
                 content: '🚫 У вас недостаточно прав для выполнения этой команды.', ephemeral: true
             });
         }
-    },
-    
-    async execute(interaction) {
         const channel = interaction.options.getChannel('channel');
 
         // Create the embed message
@@ -46,5 +43,4 @@ module.exports = {
             console.error(error);
             await interaction.reply({ content: `❌ Failed to send message to ${channel}`, ephemeral: true });
         }
-    }
-};
+    };
