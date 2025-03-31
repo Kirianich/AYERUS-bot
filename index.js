@@ -80,7 +80,8 @@ client.on('interactionCreate', async interaction => {
             if (!modal) return interaction.reply({ content: '❌ Modal interaction not found.', ephemeral: true });
 
             await modal.execute(interaction);
-        } catch (error) {
+        }
+    } catch (error) {
             console.error('❌ Interaction Error:', error);
             interaction.reply({ content: '⚠️ Ошибка обработки взаимодействия!', ephemeral: true }).catch(() => {});
         }
