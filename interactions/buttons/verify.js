@@ -12,7 +12,7 @@ module.exports = {
 
             if (existingUser) {
                 return interaction.reply({content: '✅ Вы уже верифицированы!', ephemeral: true });
-            }
+            } else {
                 
             // Show a modal to ask for Minecraft username
              const modal = new ModalBuilder()
@@ -29,6 +29,7 @@ module.exports = {
             modal.addComponents(row);
 
             await interaction.showModal(modal);
+            }
         } catch (error) {
             console.error('❌ Error in verify.js:', error);
             return interaction.reply({ content: '❌ Ошибка при обработке запроса. Попробуйте позже.', ephemeral: true });
