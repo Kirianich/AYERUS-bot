@@ -54,7 +54,7 @@ module.exports = {
             }
 
             const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
-            const member = interaction.guild.members.fetch(discordId);
+            const member = await interaction.guild.members.fetch(discordId);
 
 
 
