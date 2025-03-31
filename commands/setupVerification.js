@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
-const GuildSettings = require('../../models/GuildSettings');
 
 module.exports = {
     data: new SlashCommandBuilder()
