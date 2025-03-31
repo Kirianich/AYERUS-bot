@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
+const GuildSettings = require('../../models/GuildSettings');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,8 +8,15 @@ module.exports = {
         .addChannelOption(option => 
             option.setName('channel')
                 .setDescription('The channel to send the verification message')
-                .setRequired(true)
-        ),
+                .setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
+    async execute(interaction) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
+            return interaction.reply ({
+                content: '🚫 У вас недостаточно прав для выполнения этой команды.', ephemeral: true
+            });
+        }
+    },
     
     async execute(interaction) {
         const channel = interaction.options.getChannel('channel');
