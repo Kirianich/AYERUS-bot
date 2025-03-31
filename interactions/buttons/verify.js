@@ -1,17 +1,8 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-const User = require('../../models/User'); // Import the User model
 
 module.exports = {
     customId: 'verify_button',
     async execute(interaction) {
-            const discordId = interaction.user.id;
-
-            // Check if the user is already verified in the database
-            const existingUser = await User.findOne({ discordId });
-
-            if (existingUser) {
-                return interaction.reply({content: '✅ Вы уже верифицированы!', ephemeral: true });
-            } else {
                 
             // Show a modal to ask for Minecraft username
              const modal = new ModalBuilder()
@@ -27,7 +18,6 @@ module.exports = {
             const row = new ActionRowBuilder().addComponents(usernameInput);
             modal.addComponents(row);
 
-            await interaction.showModal(modal);
-            }
+            await interaction.showModal(modal);  
         }
     };
