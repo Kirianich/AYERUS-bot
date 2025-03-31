@@ -34,7 +34,7 @@ for (const file of commandFiles) {
 }
 
 const buttonsPath = path.join(__dirname, 'interactions/buttons');
-const buttonsFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
+const buttonFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
 
 for (const file of buttonFiles) {
     const button = require(path.join(buttonsPath, file));
