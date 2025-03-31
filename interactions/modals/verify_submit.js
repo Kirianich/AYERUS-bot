@@ -38,11 +38,8 @@ module.exports = {
             }
 
             const discordUsername = interaction.user.globalName; // New format (since Discord removed discriminators)
-            // Check if the linked Discord matches either format
-            const linkedDiscordNormalized = linkedDiscord.toLowerCase().trim();
-            const discordUsernameNormalized = discordUsername.toLowerCase().trim();
             
-            if (linkedDiscordNormalized !== discordUsernameNormalized) {
+            if (linkedDiscord !== discordUsername) {
                 return interaction.editReply({ 
                 content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`, ephemeral: true });
             }
