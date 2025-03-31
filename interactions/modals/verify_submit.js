@@ -10,48 +10,50 @@ module.exports = {
     async execute(interaction) {
         const username = interaction.fields.getTextInputValue('minecraft_username');
         const discordId = interaction.user.id;
+        console.log("🔍 Received interaction for:", interaction.customId);        
 
         await interaction.deferReply({ ephemeral: true });
+        console.log("✅ Interaction deferred");
 
         try {
             // Check if user is already verified
             const existingUser = await User.findOne({ discordId });
             if (existingUser) {
-                return interaction.editReply({ content: '✅ Вы уже верифицированы!', ephemeral: true });
+                return interaction.editReply({ content: '✅ Вы уже верифицированы!'});
             }
 
             // Call Hypixel API
             const response = await axios.get(`https://api.hypixel.net/player?key=${process.env.HYPIXEL_API_KEY}&name=${username}`);
             console.log("📡 Hypixel API Response:", response.data);
             if (!response.data.success) {
-                return interaction.editReply({ content: '❌ Ошибка API Hypixel, попробуйте позже.', ephemeral: true });
+                return interaction.editReply({ content: '❌ Ошибка API Hypixel, попробуйте позже.'});
             }
 
             const playerData = response.data.player;
             if (!playerData) {
                 console.log("⚠️ No player data found for username:", username);
-                return interaction.editReply({ content: '❌ Игрок с таким ником не найден на Hypixel!', ephemeral: true });
+                return interaction.editReply({ content: '❌ Игрок с таким ником не найден на Hypixel!'});
             }
 
             // Ensure socialMedia exists
             const linkedDiscord = playerData?.socialMedia?.links?.DISCORD;
             if (!linkedDiscord) {
                 console.log("⚠️ No linked Discord found for:", username);
-                return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.', ephemeral: true });
+                return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.'});
             }
 
             const discordUsername = interaction.user.globalName; // New format (since Discord removed discriminators)
             console.log("🔗 Comparing Linked Discord:", linkedDiscord, "with User:", discordUsername);
             if (linkedDiscord !== discordUsername) {
                 return interaction.editReply({ 
-                content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`, ephemeral: true });
+                content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`});
             }
 
             // Fetch the verified role from MongoDB
             const guildSettings = await GuildSettings.findOne({ guildId: interaction.guild.id });
             if (!guildSettings || !guildSettings.verifiedRole) {
                 console.log("⚠️ No verified role set for guild:", interaction.guild.id);
-                return interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`', ephemeral: true });
+                return interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`'});
             }
 
             const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
@@ -70,14 +72,14 @@ module.exports = {
                     guildId: interaction.guild.id
                 });
 
-                return interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!', ephemeral: true });
+                return interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!'});
             } else {
-                return interaction.editReply({ content: '❌ Не удалось назначить роль.', ephemeral: true });
+                return interaction.editReply({ content: '❌ Не удалось назначить роль.'});
             }
 
         } catch (error) {
             console.error(error);
-            return interaction.editReply({ content: '❌ Ошибка при получении данных. Попробуйте позже.', ephemeral: true });
+            return interaction.editReply({ content: '❌ Ошибка при получении данных. Попробуйте позже.'});
         }
     }
 };
