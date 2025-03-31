@@ -3,13 +3,13 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const User = require('../../models/User'); // Schema for storing verified users
 const GuildSettings = require('../../models/GuildSettings'); // Stores guild-specific settings
+require('dotenv').config();
 
 module.exports = {
     customId: 'verification_modal',
     async execute(interaction) {
         const username = interaction.fields.getTextInputValue('minecraft_username');
         const discordId = interaction.user.id;
-        const discordUsername = interaction.user.username; // New format (since Discord removed discriminators)
 
         await interaction.reply({ content: '🔍 Проверяю, пожалуйста подождите...', ephemeral: true });
 
@@ -37,6 +37,7 @@ module.exports = {
                 return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.', ephemeral: true });
             }
 
+            const discordUsername = interaction.user.globalName; // New format (since Discord removed discriminators)
             // Check if the linked Discord matches either format
             if (linkedDiscord !== discordUsername) {
                 return interaction.editReply({ 
