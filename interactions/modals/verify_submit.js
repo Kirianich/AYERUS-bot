@@ -1,4 +1,4 @@
-const { Events, DiscordAPIError } = require('discord.js');
+const { Events } = require('discord.js');
 const axios = require('axios');
 const mongoose = require('mongoose');
 const User = require('../../models/User'); // Schema for storing verified users
@@ -47,12 +47,6 @@ module.exports = {
             // Fetch Hypixel rank
             let rank = playerData.rank || playerData.newPackageRank || playerData.monthlyPackageRank || "Default";
 
-            // Fetch Skyblock Level
-            const skyblockLevel = playerData.achievements?.skyblock_level || 0;
-
-            // Fetch Skyblock Skill Levels
-            const skyblockSkills = playerData.stats?.SkyBlock?.skills || {};
-
             // Fetch Hypixel Guild Data
             let hypixelGuild = "None";
             let guildRank = "Member";
@@ -62,6 +56,42 @@ module.exports = {
                 const member = guildResponse.data.guild.members.find(m => m.uuid === playerData.uuid);
                 guildRank = member?.rank || "Member";
             }
+
+            // Fetch Skyblock Profile
+            let skyblockLevel = 0;
+            let skyblockSkills = {};
+
+            const sbProfilesResponse = await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.HYPIXEL_API_KEY}&uuid=${playerData.uuid}`);
+            if (sbProfilesResponse.data.success && sbProfilesResponse.data.profiles) {
+                // Find the main profile
+                const mainProfile = sbProfilesResponse.data.profiles.find(profile => profile.selected);
+                if (mainProfile) {
+                    const profileData = mainProfile.members[playerData.uuid];
+                    
+                    // Extract Skyblock Level
+                    skyblockLevel = profileData?.leveling?.experience || 0;
+                    
+                    // Extract Skyblock Skills
+                    const skills = profileData?.experience || {};
+                    const skillNames = {
+                        farming: "Farming",
+                        mining: "Mining",
+                        combat: "Combat",
+                        foraging: "Foraging",
+                        fishing: "Fishing",
+                        enchanting: "Enchanting",
+                        alchemy: "Alchemy",
+                        taming: "Taming",
+                        carpentry: "Carpentry",
+                        runecrafting: "Runecrafting"
+                    };
+
+                    for (const skill in skillNames) {
+                        skyblockSkills[skillNames[skill]] = Math.floor((skills[skill] || 0) / 1000); // Convert XP to level
+                    }
+                }
+            }
+
             
             const discordUsername = interaction.user.username;
             console.log("🔗 Comparing Linked Discord:", linkedDiscord, "with User:", discordUsername);
