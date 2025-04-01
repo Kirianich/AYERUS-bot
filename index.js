@@ -54,16 +54,17 @@ client.on(Events.InteractionCreate, async interaction => {
         }
 
         if (!handler) {
-            return interaction.reply({ content: '❌ Interaction not found.', ephemeral: true }).catch(() => {});
+            if (!interaction.replied && !interaction.deferred) {
+                return interaction.reply({ content: '❌ Interaction not found.', ephemeral: true }).catch(() => {});
+            }   
         }
 
+        // **Defer reply before handling long operations**
+        await interaction.deferReply({ ephemeral: true });
+        
         await handler.execute(interaction);
     } catch (error) {
         console.error('❌ Interaction Error:', error);
-
-        if (!interaction.replied && !interaction.deferred) {
-            console.warn('⚠️ Ошибка обработки взаимодействия!');
-        }
     }
 });
 
