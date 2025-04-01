@@ -62,7 +62,7 @@ client.on(Events.InteractionCreate, async interaction => {
         console.error('❌ Interaction Error:', error);
 
         if (!interaction.replied && !interaction.deferred) {
-            await interaction.reply({ content: '⚠️ Ошибка обработки взаимодействия!', ephemeral: true }).catch(() => {});
+            console.warn('⚠️ Ошибка обработки взаимодействия!');
         }
     }
 });
