@@ -52,15 +52,6 @@ client.on(Events.InteractionCreate, async interaction => {
         } else if (interaction.isModalSubmit()) {
             handler = client.modals.get(interaction.customId);
         }
-
-        if (!handler) {
-            if (!interaction.replied && !interaction.deferred) {
-                return interaction.reply({ content: '❌ Interaction not found.', ephemeral: true }).catch(() => {});
-            }   
-        }
-
-        // **Defer reply before handling long operations**
-        await interaction.deferReply({ ephemeral: true });
         
         await handler.execute(interaction);
     } catch (error) {
