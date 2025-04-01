@@ -16,7 +16,8 @@ module.exports = {
             return interaction.editReply ({
                 content: '🚫 У вас недостаточно прав для выполнения этой команды.', ephemeral: true
             });
-        } else {
+        }
+        
         const channel = interaction.options.getChannel('channel');
 
         // Create the embed message
@@ -42,10 +43,7 @@ module.exports = {
             await interaction.editReply({ content: `✅ Verification message sent to ${channel}`, ephemeral: true });
         } catch (error) {
             console.error(error);
-            if (!interaction.replied && !interaction.deferred) {
-                await interaction.reply({ content: `❌ Failed to send message to ${channel}`, ephemeral: true }).catch(() => {});
-            }
+                await interaction.editReply({ content: `❌ Failed to send message to ${channel}`, ephemeral: true }).catch(() => {});
         }
     }
-}
 };
