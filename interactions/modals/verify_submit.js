@@ -8,25 +8,27 @@ require('dotenv').config();
 module.exports = {
     customId: 'verification_modal',
     async execute(interaction) {
-        const username = interaction.fields.getTextInputValue('minecraft_username');
-        const discordId = interaction.user.id;
-        console.log("🔍 Received interaction for:", interaction.customId);        
-
-        await interaction.deferReply({ ephemeral: true });
-        console.log("✅ Interaction deferred");
-
         try {
+            const username = interaction.fields.getTextInputValue('minecraft_username');
+            const discordId = interaction.user.id;
+            console.log("🔍 Received interaction for:", interaction.customId);        
+
+            await interaction.deferReply({ ephemeral: true });
+            console.log("✅ Interaction deferred");
+
             // Check if user is already verified
             const existingUser = await User.findOne({ discordId });
             if (existingUser) {
-                return interaction.editReply({ content: '✅ Вы уже верифицированы!'});
+                await interaction.editReply({ content: '✅ Вы уже верифицированы!'});
+                return;
             }
 
             // Call Hypixel API
             const response = await axios.get(`https://api.hypixel.net/player?key=${process.env.HYPIXEL_API_KEY}&name=${username}`);
             console.log("📡 Hypixel API Response:", response.data);
             if (!response.data.success) {
-                return interaction.editReply({ content: '❌ Ошибка API Hypixel, попробуйте позже.'});
+                await interaction.editReply({ content: '❌ Ошибка API Hypixel, попробуйте позже.'});
+                return;
             }
 
             const playerData = response.data.player;
@@ -39,21 +41,23 @@ module.exports = {
             const linkedDiscord = playerData?.socialMedia?.links?.DISCORD;
             if (!linkedDiscord) {
                 console.log("⚠️ No linked Discord found for:", username);
-                return interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.'});
+                await interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.'});
+                return;
             }
 
             const discordUsername = interaction.user.username;
             console.log("🔗 Comparing Linked Discord:", linkedDiscord, "with User:", discordUsername);
             if (linkedDiscord !== discordUsername) {
-                return interaction.editReply({ 
-                content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`});
+                await interaction.editReply({ content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`});
+                return;
             }
 
             // Fetch the verified role from MongoDB
             const guildSettings = await GuildSettings.findOne({ guildId: interaction.guild.id });
             if (!guildSettings || !guildSettings.verifiedRole) {
                 console.log("⚠️ No verified role set for guild:", interaction.guild.id);
-                return interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`'});
+                await interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`'});
+                return;
             }
 
             const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
@@ -72,17 +76,17 @@ module.exports = {
                     guildId: interaction.guild.id
                 });
 
-                return interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!'});
+                await interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!'});
             } else {
-                return interaction.editReply({ content: '❌ Не удалось назначить роль.'});
+                await interaction.editReply({ content: '❌ Не удалось назначить роль.'});
+                return;
             }
 
         } catch (error) {
-             if (interaction.replied || interaction.deferred) {
-        await interaction.editReply({ content: '❌ Something went wrong. Try again later.', ephemeral: true });
-    } else {
-        await interaction.reply({ content: '❌ Something went wrong. Try again later.', ephemeral: true });
-    }
+            console.error("❌ Error in verification:", error);
+            if (interaction.deferred) {
+                await interaction.editReply({ content: '❌ Something went wrong. Try again later.', ephemeral: true });
+            }
         }
     }
 };
