@@ -45,6 +45,25 @@ module.exports = {
                 return;
             }
 
+            // Fetch Hypixel rank
+            let rank = playerData.rank || playerData.newPackageRank || playerData.monthlyPackageRank || "Default";
+
+            // Fetch Skyblock Level
+            const skyblockLevel = playerData.achievements?.skyblock_level || 0;
+
+            // Fetch Skyblock Skill Levels
+            const skyblockSkills = playerData.stats?.SkyBlock?.skills || {};
+
+            // Fetch Hypixel Guild Data
+            let hypixelGuild = "None";
+            let guildRank = "Member";
+            const guildResponse = await axios.get(`https://api.hypixel.net/guild?key=${process.env.HYPIXEL_API_KEY}&player=${playerData.uuid}`);
+            if (guildResponse.data.success && guildResponse.data.guild) {
+                hypixelGuild = guildResponse.data.guild.name;
+                const member = guildResponse.data.guild.members.find(m => m.uuid === playerData.uuid);
+                guildRank = member?.rank || "Member";
+            }
+            
             const discordUsername = interaction.user.username;
             console.log("🔗 Comparing Linked Discord:", linkedDiscord, "with User:", discordUsername);
             if (linkedDiscord !== discordUsername) {
@@ -73,7 +92,12 @@ module.exports = {
                 await User.create({
                     discordId,
                     username,
-                    guildId: interaction.guild.id
+                    guildId: interaction.guild.id,
+                    hypixelGuild,
+                    guildRank,
+                    networkRank: rank,
+                    skyblockLevel,
+                    skyblockSkills
                 });
 
                 await interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!'});
