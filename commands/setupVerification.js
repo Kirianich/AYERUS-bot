@@ -10,6 +10,7 @@ module.exports = {
                 .setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
     async execute(interaction) {
+        await interaction.deferReply({ephemeral: true});
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
             return interaction.editReply ({
                 content: '🚫 У вас недостаточно прав для выполнения этой команды.', ephemeral: true
