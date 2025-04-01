@@ -3,6 +3,7 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
     customId: 'howto_button',
     async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true });
         const embed = new EmbedBuilder()
             .setColor(0x63eb6f) // Change color as needed
             .setTitle('📖 Как привязать аккаунт')
@@ -24,6 +25,6 @@ module.exports = {
             )
             .setFooter({ text: 'Если возникли вопросы, обратитесь к администрации.' });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        return interaction.editReply({ embeds: [embed], ephemeral: true });
     }
 };
