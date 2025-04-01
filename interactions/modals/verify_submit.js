@@ -9,11 +9,11 @@ module.exports = {
     customId: 'verification_modal',
     async execute(interaction) {
         try {
-            await interaction.deferReply({ ephemeral: true });
-            console.log("✅ Interaction deferred");
             const username = interaction.fields.getTextInputValue('minecraft_username');
             const discordId = interaction.user.id;
-            console.log("🔍 Received interaction for:", interaction.customId);        
+            console.log("🔍 Received interaction for:", interaction.customId);      
+            await interaction.deferReply({ ephemeral: true });
+            console.log("✅ Interaction deferred");  
 
             // Check if user is already verified
             const existingUser = await User.findOne({ discordId });
