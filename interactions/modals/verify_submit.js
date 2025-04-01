@@ -24,6 +24,13 @@ module.exports = {
 
             // Call Hypixel API
             const response = await axios.get(`https://api.hypixel.net/player?key=${process.env.HYPIXEL_API_KEY}&name=${username}`);
+
+            const playerData = response.data.player;
+            if (!playerData) {
+                console.log("⚠️ No player data found for username:", username);
+                return interaction.editReply({ content: '❌ Игрок с таким ником не найден на Hypixel!'});
+            }
+
             const guildResponse = await axios.get(`https://api.hypixel.net/guild?key=${process.env.HYPIXEL_API_KEY}&player=${playerData.uuid}`);
             const sbProfilesResponse = await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.HYPIXEL_API_KEY}&uuid=${playerData.uuid}`);
             console.log("📡 Hypixel API Response:", response.data);
@@ -32,11 +39,7 @@ module.exports = {
                 return;
             }
 
-            const playerData = response.data.player;
-            if (!playerData) {
-                console.log("⚠️ No player data found for username:", username);
-                return interaction.editReply({ content: '❌ Игрок с таким ником не найден на Hypixel!'});
-            }
+           
 
             // Ensure socialMedia exists
             const linkedDiscord = playerData?.socialMedia?.links?.DISCORD;
