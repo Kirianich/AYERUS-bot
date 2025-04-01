@@ -139,7 +139,7 @@ module.exports = {
         } catch (error) {
             console.error("❌ Error in verification:", error);
             if (interaction.deferred) {
-                await interaction.editReply({ content: '❌ Something went wrong. Try again later.', ephemeral: true });
+                await interaction.reply({ content: '❌ Something went wrong. Try again later.', ephemeral: true });
             }
         }
     }
