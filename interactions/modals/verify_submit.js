@@ -24,8 +24,10 @@ module.exports = {
 
             // Call Hypixel API
             const response = await axios.get(`https://api.hypixel.net/player?key=${process.env.HYPIXEL_API_KEY}&name=${username}`);
+            const guildResponse = await axios.get(`https://api.hypixel.net/guild?key=${process.env.HYPIXEL_API_KEY}&player=${playerData.uuid}`);
+            const sbProfilesResponse = await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.HYPIXEL_API_KEY}&uuid=${playerData.uuid}`);
             console.log("📡 Hypixel API Response:", response.data);
-            if (!response.data.success) {
+            if (!response.data.success || !guildResponse.data.success || !sbProfilesResponse.data.success) {
                 await interaction.editReply({ content: '❌ Ошибка API Hypixel, попробуйте позже.'});
                 return;
             }
@@ -65,7 +67,6 @@ module.exports = {
             // Fetch Hypixel Guild Data
             let hypixelGuild = "None";
             let guildRank = "Member";
-            const guildResponse = await axios.get(`https://api.hypixel.net/guild?key=${process.env.HYPIXEL_API_KEY}&player=${playerData.uuid}`);
             if (guildResponse.data.success && guildResponse.data.guild) {
                 hypixelGuild = guildResponse.data.guild.name;
                 const member = guildResponse.data.guild.members.find(m => m.uuid === playerData.uuid);
@@ -76,7 +77,6 @@ module.exports = {
             let skyblockLevel = 0;
             let skyblockSkills = {};
 
-            const sbProfilesResponse = await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.HYPIXEL_API_KEY}&uuid=${playerData.uuid}`);
             if (sbProfilesResponse.data.success && sbProfilesResponse.data.profiles) {
                 // Find the main profile
                 const mainProfile = sbProfilesResponse.data.profiles.find(profile => profile.selected);
@@ -108,14 +108,12 @@ module.exports = {
             }
 
             const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
-            const member = await interaction.guild.members.fetch(discordId);
-
             console.log("🔍 Fetched Role:", role ? "✅ Found" : "❌ Not Found");
+            const member = await interaction.guild.members.fetch(discordId);
             console.log("🔍 Fetched Member:", member ? "✅ Found" : "❌ Not Found");
 
             if (role && member) {
                 await member.roles.add(role);
-
                 // Save user to the database
                 await User.create({
                     discordId,
@@ -128,7 +126,7 @@ module.exports = {
                     skyblockSkills
                 });
 
-                await interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!'});
+                return interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!'});
             } else {
                 await interaction.editReply({ content: '❌ Не удалось назначить роль.'});
                 return;
