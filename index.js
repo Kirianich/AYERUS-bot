@@ -42,18 +42,19 @@ loadFiles('interactions/modals', client.modals, 'modals');
 
 // Handle Interactions Properly
 client.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isChatInputCommand() && !interaction.isButton() && !interaction.isModalSubmit()) return;
     try {
         let handler;
-
         if (interaction.isChatInputCommand()) {
             handler = client.commands.get(interaction.commandName);
+            await handler.execute(interaction);
         } else if (interaction.isButton()) {
             handler = client.buttons.get(interaction.customId);
+            await handler.execute(interaction);
         } else if (interaction.isModalSubmit()) {
             handler = client.modals.get(interaction.customId);
-        }
-        
-        await handler.execute(interaction);
+            await handler.execute(interaction);
+        }    
     } catch (error) {
         console.error('❌ Interaction Error:', error);
     }
