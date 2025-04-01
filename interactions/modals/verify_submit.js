@@ -43,6 +43,21 @@ module.exports = {
                 await interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.'});
                 return;
             }
+            
+            const discordUsername = interaction.user.username;
+            console.log("🔗 Comparing Linked Discord:", linkedDiscord, "with User:", discordUsername);
+            if (linkedDiscord !== discordUsername) {
+                await interaction.editReply({ content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`});
+                return;
+            }
+
+            // Fetch the verified role from MongoDB
+            const guildSettings = await GuildSettings.findOne({ guildId: interaction.guild.id });
+            if (!guildSettings || !guildSettings.verifiedRole) {
+                console.log("⚠️ No verified role set for guild:", interaction.guild.id);
+                await interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`'});
+                return;
+            }
 
             // Fetch Hypixel rank
             let rank = playerData.rank || playerData.newPackageRank || playerData.monthlyPackageRank || "Default";
@@ -90,22 +105,6 @@ module.exports = {
                         skyblockSkills[skillNames[skill]] = Math.floor((skills[skill] || 0) / 1000); // Convert XP to level
                     }
                 }
-            }
-
-            
-            const discordUsername = interaction.user.username;
-            console.log("🔗 Comparing Linked Discord:", linkedDiscord, "with User:", discordUsername);
-            if (linkedDiscord !== discordUsername) {
-                await interaction.editReply({ content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`});
-                return;
-            }
-
-            // Fetch the verified role from MongoDB
-            const guildSettings = await GuildSettings.findOne({ guildId: interaction.guild.id });
-            if (!guildSettings || !guildSettings.verifiedRole) {
-                console.log("⚠️ No verified role set for guild:", interaction.guild.id);
-                await interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`'});
-                return;
             }
 
             const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
