@@ -11,7 +11,7 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
     async execute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-            return interaction.reply ({
+            return interaction.editReply ({
                 content: '🚫 У вас недостаточно прав для выполнения этой команды.', ephemeral: true
             });
         } else {
@@ -37,10 +37,10 @@ module.exports = {
         // Send the embed with buttons
         try {
             await channel.send({ embeds: [embed], components: [row] });
-            await interaction.reply({ content: `✅ Verification message sent to ${channel}`, ephemeral: true });
+            await interaction.editReply({ content: `✅ Verification message sent to ${channel}`, ephemeral: true });
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: `❌ Failed to send message to ${channel}`, ephemeral: true });
+            await interaction.editReply({ content: `❌ Failed to send message to ${channel}`, ephemeral: true });
         }
     }
 }
