@@ -8,13 +8,14 @@ require('dotenv').config();
 module.exports = {
     customId: 'verification_modal',
     async execute(interaction) {
-        
+        await interaction.deferReply({ ephemeral: true });
+        console.log("✅ Interaction deferred");  
+
+        try {
             const username = interaction.fields.getTextInputValue('minecraft_username');
             const discordId = interaction.user.id;
-            console.log("🔍 Received interaction for:", interaction.customId);      
-            await interaction.deferReply({ ephemeral: true });
-            console.log("✅ Interaction deferred");  
-        try {
+            console.log("🔍 Received interaction for:", interaction.customId);
+        
             // Check if user is already verified
             const existingUser = await User.findOne({ discordId });
             if (existingUser) {
