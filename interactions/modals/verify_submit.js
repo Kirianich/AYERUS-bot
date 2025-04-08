@@ -24,20 +24,45 @@ module.exports = {
             }
 
             // Call Hypixel API
-            const response = await axios.get(`https://api.hypixel.net/player?key=${process.env.HYPIXEL_API_KEY}&name=${username}`);
+            const {data: playerRes} = await axios.get(`https://api.hypixel.net/player?key=${process.env.HYPIXEL_API_KEY}&name=${username}`);
 
-            const playerData = response.data.player;
-            if (!playerData) {
+            if (!playerRes.success || !playerRes.player) {
                 console.log("⚠️ No player data found for username:", username);
-                return interaction.editReply({ content: '❌ Игрок с таким ником не найден на Hypixel!'});
+                return interaction.editReply({ content: '❌ Игрок не найден или ошибка в API'});
+            }
+            
+            const player = playerRes.player;
+            const uuid = player.uuid;
+            const displayName = player.displayname;
+            const networkRank = player.rank || player.monthlyPackageRank || player.newPackageRank || 'NONE';
+
+            const {data: profileRes} = await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.HYPIXEL_API_KEY}&uuid=${uuid}`);
+            console.log("📡 Hypixel API Response:", response.data);
+            if (!profileRes.success || !profileRes.profiles) {
+                return interaction.editReply({ content: '❌ Не удалось загрузить SkyBlock профили.' });
+            }
+            
+            const mainProfile = profileRes.profiles.find(p => p.selected);
+            const memberData = mainProfile?.members?.[uuid];
+
+            if (!mainProfile || !memberData) {
+                return interaction.editReply({ content: '❌ Не удалось определить основной SkyBlock профиль.' });
             }
 
-            const guildResponse = await axios.get(`https://api.hypixel.net/guild?key=${process.env.HYPIXEL_API_KEY}&player=${playerData.uuid}`);
-            const sbProfilesResponse = await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.HYPIXEL_API_KEY}&uuid=${playerData.uuid}`);
-            console.log("📡 Hypixel API Response:", response.data);
-            if (!response.data.success || !guildResponse.data.success || !sbProfilesResponse.data.success) {
-                await interaction.editReply({ content: '❌ Ошибка API Hypixel, попробуйте позже.'});
-                return;
+            const skyblockLevel = mainProfile.leveling?.experience || memberData?.leveling?.experience || 0;
+
+            // TEMP: Log raw skills structure for future parsing
+            console.log("🧪 Raw skills data:", memberData.experience || {});
+
+            const {data: guildRes} = await axios.get(`https://api.hypixel.net/guild?key=${process.env.HYPIXEL_API_KEY}&player=${uuid}`);
+
+            let guildName = null;
+            let guildRank = null;
+
+            if (guildRes.success && guildRes.guild) {
+                guildName = guildRes.guild.name;
+                const memberInfo = guildRes.guild.members.find(m => m.uuid === uuid);
+                guildRank = memberInfo?.rank || 'Member';
             }
 
            
@@ -63,52 +88,6 @@ module.exports = {
                 console.log("⚠️ No verified role set for guild:", interaction.guild.id);
                 await interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`'});
                 return;
-            }
-
-            // Fetch Hypixel rank
-            let rank = playerData.rank || playerData.newPackageRank || playerData.monthlyPackageRank || "Default";
-
-            // Fetch Hypixel Guild Data
-            let hypixelGuild = "None";
-            let guildRank = "Member";
-            if (guildResponse.data.success && guildResponse.data.guild) {
-                hypixelGuild = guildResponse.data.guild.name;
-                const member = guildResponse.data.guild.members.find(m => m.uuid === playerData.uuid);
-                guildRank = member?.rank || "Member";
-            }
-
-            // Fetch Skyblock Profile
-            let skyblockLevel = 0;
-            let skyblockSkills = {};
-
-            if (sbProfilesResponse.data.success && sbProfilesResponse.data.profiles) {
-                // Find the main profile
-                const mainProfile = sbProfilesResponse.data.profiles.find(profile => profile.selected);
-                if (mainProfile) {
-                    const profileData = mainProfile.members[playerData.uuid];
-                    
-                    // Extract Skyblock Level
-                    skyblockLevel = profileData?.leveling?.experience || 0;
-                    
-                    // Extract Skyblock Skills
-                    const skills = profileData?.experience || {};
-                    const skillNames = {
-                        farming: "Farming",
-                        mining: "Mining",
-                        combat: "Combat",
-                        foraging: "Foraging",
-                        fishing: "Fishing",
-                        enchanting: "Enchanting",
-                        alchemy: "Alchemy",
-                        taming: "Taming",
-                        carpentry: "Carpentry",
-                        runecrafting: "Runecrafting"
-                    };
-
-                    for (const skill in skillNames) {
-                        skyblockSkills[skillNames[skill]] = Math.floor((skills[skill] || 0) / 1000); // Convert XP to level
-                    }
-                }
             }
 
             const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
