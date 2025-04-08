@@ -18,28 +18,6 @@ client.commands = new Collection();
 client.buttons = new Collection();
 client.modals = new Collection();
 
-const loadFiles = (dir, collection, type) => {
-    const fullPath = path.join(__dirname, dir);
-    const files = fs.readdirSync(fullPath).filter(file => file.endsWith('.js'));
-
-    for (const file of files) {
-        const interaction = require(path.join(fullPath, file));
-        if ((type === 'commands' && interaction.data && interaction.execute) ||
-            (type !== 'commands' && interaction.customId && interaction.execute)) {
-            
-            const key = type === 'commands' ? interaction.data.name : interaction.customId;
-            collection.set(key, interaction);
-            console.log(`✅ Loaded ${type.slice(0, -1)}: ${key}`);
-        } else {
-            console.warn(`⚠️ ${type.slice(0, -1)} ${file} is missing required properties.`);
-        }
-    }
-};
-
-loadFiles('commands', client.commands, 'commands');
-loadFiles('interactions/buttons', client.buttons, 'buttons');
-loadFiles('interactions/modals', client.modals, 'modals');
-
 // Handle Interactions Properly
 client.on(Events.InteractionCreate, async interaction => {
    try {
