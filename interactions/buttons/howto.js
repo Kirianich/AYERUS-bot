@@ -24,6 +24,6 @@ module.exports = {
             )
             .setFooter({ text: 'Если возникли вопросы, обратитесь к администрации.' });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 };
