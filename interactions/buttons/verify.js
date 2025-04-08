@@ -19,5 +19,6 @@ module.exports = {
             modal.addComponents(row);
 
             await interaction.showModal(modal);  
+            console.log("🔍 Received interaction for:", interaction.customId);
         }
     };
