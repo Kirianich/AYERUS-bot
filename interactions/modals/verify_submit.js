@@ -1,47 +1,66 @@
-const { Events } = require('discord.js');
 const axios = require('axios');
-const mongoose = require('mongoose');
-const User = require('../../models/User'); // Schema for storing verified users
-const GuildSettings = require('../../models/GuildSettings'); // Stores guild-specific settings
+const User = require('../../models/User');
+const GuildSettings = require('../../models/GuildSettings');
 require('dotenv').config();
 
 module.exports = {
     customId: 'verification_modal',
     async execute(interaction) {
+        const username = interaction.fields.getTextInputValue('minecraft_username');
+        const discordId = interaction.user.id;
+        const discordUsername = interaction.user.username;
+        const guildId = interaction.guild.id;
+
+        console.log("🔍 Received interaction for:", interaction.customId);
+
         await interaction.deferReply({ ephemeral: true });
-        console.log("✅ Interaction deferred");  
+        console.log("✅ Interaction deferred");
 
         try {
-            const username = interaction.fields.getTextInputValue('minecraft_username');
-            const discordId = interaction.user.id;
-            console.log("🔍 Received interaction for:", interaction.customId);
-        
-            // Check if user is already verified
             const existingUser = await User.findOne({ discordId });
             if (existingUser) {
-                await interaction.editReply({ content: '✅ Вы уже верифицированы!'});
-                return;
+                return interaction.editReply({ content: '✅ Вы уже верифицированы!' });
             }
 
-            // Call Hypixel API
-            const {data: playerRes} = await axios.get(`https://api.hypixel.net/player?key=${process.env.HYPIXEL_API_KEY}&name=${username}`);
+            // Step 1: Fetch player data
+            const { data: playerRes } = await axios.get('https://api.hypixel.net/player', {
+                params: {
+                    key: process.env.HYPIXEL_API_KEY,
+                    name: username
+                }
+            });
 
             if (!playerRes.success || !playerRes.player) {
-                console.log("⚠️ No player data found for username:", username);
-                return interaction.editReply({ content: '❌ Игрок не найден или ошибка в API'});
+                return interaction.editReply({ content: '❌ Игрок не найден или API ответило с ошибкой.' });
             }
-            
+
             const player = playerRes.player;
             const uuid = player.uuid;
             const displayName = player.displayname;
             const networkRank = player.rank || player.monthlyPackageRank || player.newPackageRank || 'NONE';
+            const linkedDiscord = player?.socialMedia?.links?.DISCORD;
 
-            const {data: profileRes} = await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.HYPIXEL_API_KEY}&uuid=${uuid}`);
-            console.log("📡 Hypixel API Response:", response.data);
+            console.log("🎮 UUID:", uuid);
+            console.log("🔗 Linked Discord:", linkedDiscord);
+            console.log("🏷️ Display Name:", displayName);
+            console.log("🌐 Network Rank:", networkRank);
+
+            if (!linkedDiscord || linkedDiscord !== discordUsername) {
+                return interaction.editReply({ content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!` });
+            }
+
+            // Step 2: Fetch SkyBlock profiles
+            const { data: profileRes } = await axios.get('https://api.hypixel.net/skyblock/profiles', {
+                params: {
+                    key: process.env.HYPIXEL_API_KEY,
+                    uuid
+                }
+            });
+
             if (!profileRes.success || !profileRes.profiles) {
                 return interaction.editReply({ content: '❌ Не удалось загрузить SkyBlock профили.' });
             }
-            
+
             const mainProfile = profileRes.profiles.find(p => p.selected);
             const memberData = mainProfile?.members?.[uuid];
 
@@ -50,11 +69,16 @@ module.exports = {
             }
 
             const skyblockLevel = mainProfile.leveling?.experience || memberData?.leveling?.experience || 0;
+            console.log("📈 SkyBlock Level XP:", skyblockLevel);
+            console.log("🧪 Raw Skills Data:", memberData.experience || {});
 
-            // TEMP: Log raw skills structure for future parsing
-            console.log("🧪 Raw skills data:", memberData.experience || {});
-
-            const {data: guildRes} = await axios.get(`https://api.hypixel.net/guild?key=${process.env.HYPIXEL_API_KEY}&player=${uuid}`);
+            // Step 3: Fetch guild info
+            const { data: guildRes } = await axios.get('https://api.hypixel.net/guild', {
+                params: {
+                    key: process.env.HYPIXEL_API_KEY,
+                    player: uuid
+                }
+            });
 
             let guildName = null;
             let guildRank = null;
@@ -63,60 +87,46 @@ module.exports = {
                 guildName = guildRes.guild.name;
                 const memberInfo = guildRes.guild.members.find(m => m.uuid === uuid);
                 guildRank = memberInfo?.rank || 'Member';
+                console.log("🏰 Guild Name:", guildName);
+                console.log("📛 Guild Rank:", guildRank);
             }
 
-           
-
-            // Ensure socialMedia exists
-            const linkedDiscord = playerData?.socialMedia?.links?.DISCORD;
-            if (!linkedDiscord) {
-                console.log("⚠️ No linked Discord found for:", username);
-                await interaction.editReply({ content: '❌ Нет привязанного аккаунта Discord в профиле игрока на Hypixel.'});
-                return;
-            }
-            
-            const discordUsername = interaction.user.username;
-            console.log("🔗 Comparing Linked Discord:", linkedDiscord, "with User:", discordUsername);
-            if (linkedDiscord !== discordUsername) {
-                await interaction.editReply({ content: `❌ Ваш привязанный Discord (${linkedDiscord}) не совпадает с текущим!`});
-                return;
-            }
-
-            // Fetch the verified role from MongoDB
-            const guildSettings = await GuildSettings.findOne({ guildId: interaction.guild.id });
+            // Fetch verified role
+            const guildSettings = await GuildSettings.findOne({ guildId });
             if (!guildSettings || !guildSettings.verifiedRole) {
-                console.log("⚠️ No verified role set for guild:", interaction.guild.id);
-                await interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`'});
-                return;
+                return interaction.editReply({ content: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`' });
             }
 
             const role = interaction.guild.roles.cache.get(guildSettings.verifiedRole);
-            console.log("🔍 Fetched Role:", role ? "✅ Found" : "❌ Not Found");
             const member = await interaction.guild.members.fetch(discordId);
-            console.log("🔍 Fetched Member:", member ? "✅ Found" : "❌ Not Found");
 
             if (role && member) {
                 await member.roles.add(role);
-                // Save user to the database
+
+                // Save user
                 await User.create({
                     discordId,
                     username,
-                    guildId: interaction.guild.id,
-                    hypixelGuild,
-                    guildRank,
-                    networkRank: rank,
+                    guildId,
+                    uuid,
+                    displayName,
+                    networkRank,
                     skyblockLevel,
-                    skyblockSkills
+                    guildName,
+                    guildRank
                 });
 
-                return interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!'});
+                return interaction.editReply({ content: '✅ Ваш аккаунт успешно привязан!' });
             } else {
-                await interaction.editReply({ content: '❌ Не удалось назначить роль.'});
-                return;
+                return interaction.editReply({ content: '❌ Не удалось назначить роль.' });
             }
-
         } catch (error) {
-            console.error("❌ Error in verification:", error);
+            console.error("❌ Ошибка во время верификации:", error);
+            if (interaction.replied || interaction.deferred) {
+                await interaction.editReply({ content: '❌ Что-то пошло не так. Попробуйте позже.' });
+            } else {
+                await interaction.reply({ content: '❌ Что-то пошло не так. Попробуйте позже.' });
+            }
         }
     }
 };
