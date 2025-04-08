@@ -18,6 +18,6 @@ module.exports = {
             const row = new ActionRowBuilder().addComponents(usernameInput);
             modal.addComponents(row);
 
-            return interaction.showModal(modal);  
+            await interaction.showModal(modal);  
         }
     };
