@@ -51,5 +51,5 @@ client.once('ready', async () => {
 try {
 client.login(process.env.TOKEN);
 } catch (error) {
-    console.error
+    console.error("❌ Error processing token:", error);
 }
