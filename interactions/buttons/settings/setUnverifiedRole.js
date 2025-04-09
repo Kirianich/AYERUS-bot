@@ -5,7 +5,7 @@ module.exports = {
     async execute(interaction) {
         const menu = new RoleSelectMenuBuilder()
             .setCustomId('settings_select_unverified_role')
-            .setPlaceholder('Выберите роль для неверифицированных пользователей')
+            .setPlaceholder('Выберите роль')
             .setMinValues(1)
             .setMaxValues(1);
 
@@ -18,9 +18,13 @@ module.exports = {
                 .setStyle(ButtonStyle.Danger)
         );
 
+        const embed = new EmbedBuilder()
+            .setTitle('📌 Пожалуйста, выберите новую роль для **неверифицированных** пользователей:')
+            .setColor(0x5865F2);
+        
         await interaction.update({
             content: '',
-            embeds: [📌 Пожалуйста, выберите новую роль для **неверифицированных** пользователей:],
+            embeds: [embed],
             components: [row, backRow]
         });
     }
