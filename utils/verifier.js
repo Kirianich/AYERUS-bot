@@ -20,9 +20,9 @@ class Verifier {
       const guild = await this.hypixel.getGuild('player', username);
 
       const linkedDiscord = player.socialMedia?.DISCORD;
-      const currentDiscord = interaction.user.username;
+      const currentDiscord = interaction.user.globalName; // New username system fallback
 
-      if (!linkedDiscord || linkedDiscord !== currentDiscord) {
+      if (!linkedDiscord || linkedDiscord.toLowerCase() !== currentDiscord.toLowerCase()) {
         return { error: `❌ Ваш привязанный Discord (${linkedDiscord || 'не указан'}) не совпадает с текущим!` };
       }
 
