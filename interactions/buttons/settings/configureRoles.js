@@ -22,7 +22,7 @@ module.exports = {
 
         const buttons = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId('settings_go_back_main')
+                .setCustomId('settings_go_back:main')
                 .setLabel('🔙 Назад')
                 .setStyle(ButtonStyle.Danger),
             new ButtonBuilder()
