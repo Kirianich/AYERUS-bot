@@ -1,11 +1,11 @@
-const { ActionRowBuilder, RoleSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, RoleSelectMenuBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     customId: 'settings_set_verified_role',
     async execute(interaction) {
         const menu = new RoleSelectMenuBuilder()
             .setCustomId('settings_select_verified_role')
-            .setPlaceholder('Выберите роль для верифицированных пользователей')
+            .setPlaceholder('Выберите роль')
             .setMinValues(1)
             .setMaxValues(1);
 
@@ -18,9 +18,13 @@ module.exports = {
                 .setStyle(ButtonStyle.Danger)
         );
 
+        const embed = new EmbedBuilder()
+            .setTitle('📌 Пожалуйста, выберите новую роль для **верифицированных** пользователей:')
+            .setColor(0x5865F2);
+        
         await interaction.update({
-            content: '📌 Пожалуйста, выберите новую роль для **верифицированных** пользователей:',
-            embeds: [],
+            content: '',
+            embeds: [embed],
             components: [row, backRow]
         });
     }
