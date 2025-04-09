@@ -79,3 +79,6 @@ client.once('ready', async () => {
 });
 
 client.login(process.env.TOKEN);
+
+const Hypixel = require('hypixel-api-reborn');
+const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
