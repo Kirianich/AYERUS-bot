@@ -69,11 +69,15 @@ client.on('interactionCreate', async interaction => {
             const command = client.commands.get(interaction.commandName);
             if (command) await command.execute(interaction);
         } else if (interaction.isButton()) {
-            const button = client.buttons.get(interaction.customId);
-            if (button) await button.execute(interaction);
+            const button = [...client.buttons.values()].find(b => interaction.customId.startsWith(b.customId));
+            if (!button) return;
+            await button.execute(interaction);
         } else if (interaction.isModalSubmit()) {
             const modal = client.modals.get(interaction.customId);
             if (modal) await modal.execute(interaction);
+        } else if (interaction.isSelectMenu()) {
+            const selectMenu = client.selectMenu.get(interaction.customId);
+            if (selectMenu) await modal.execute(interaction);
         }
     } catch (error) {
         console.error('❌ Interaction Error:', error);
