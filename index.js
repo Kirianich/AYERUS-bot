@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
 const Hypixel = require('hypixel-api-reborn');
+const { loadFilesRecursively } = require('./utils/loadFilesRecursively');
 require('dotenv').config();
 
 
@@ -33,14 +34,13 @@ fs.readdirSync(commandsPath).forEach(file => {
 });
 
 // Load button interactions
-const buttonsPath = path.join(__dirname, 'interactions/buttons');
-fs.readdirSync(buttonsPath).forEach(file => {
-    const button = require(path.join(buttonsPath, file));
-    if (button.customId && button.execute) {
-        client.buttons.set(button.customId, button);
-        console.log(`✅ Loaded button: ${button.customId}`);
-    }
-});
+const buttonFiles = loadFilesRecursively(path.join(__dirname, 'interactions/buttons'));
+for (const file of buttonFiles) {
+  const button = require(file);
+  if (button.customId && button.execute) {
+    client.buttons.set(button.customId, button);
+  }
+}
 
 // Load modal interactions
 const modalsPath = path.join(__dirname, 'interactions/modals');
@@ -71,14 +71,6 @@ client.on('interactionCreate', async interaction => {
             await interaction.reply({ content: '⚠️ Ошибка обработки взаимодействия!', ephemeral: true }).catch(() => {});
         }
     }
-});
-
-const walk = require('walkdir'); // Or a recursive function
-walk('interactions/buttons').forEach(file => {
-  const button = require(path.join(__dirname, file));
-  if (button.customId && button.execute) {
-    client.buttons.set(button.customId, button);
-  }
 });
 
 client.once('ready', async () => {
