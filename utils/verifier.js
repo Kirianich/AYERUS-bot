@@ -1,4 +1,5 @@
 // utils/Verifier.js
+const Hypixel = require('hypixel-api-reborn');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
 
