@@ -17,7 +17,7 @@ async function buildInitialSettingsMessage(guild) {
     return { embed, components: [row] };
 }
 
-async function buildConfigureRolesEmbed(guild) {
+async function buildRoleSettingsMessage(guild) {
   const settings = await GuildSettings.findOne({ guildId: guild.id }) || await GuildSettings.create({ guildId: guild.id });
 
   const embed = new EmbedBuilder()
