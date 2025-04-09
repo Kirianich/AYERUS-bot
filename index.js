@@ -64,27 +64,33 @@ for (const file of selectMenuFiles) {
 
 // Handle interactions
 client.on('interactionCreate', async interaction => {
-    try {
-        if (interaction.isChatInputCommand()) {
-            const command = client.commands.get(interaction.commandName);
-            if (command) await command.execute(interaction);
-        } else if (interaction.isButton()) {
-            const button = [...client.buttons.values()].find(b => interaction.customId.startsWith(b.customId));
-            if (!button) return;
-            await button.execute(interaction);
-        } else if (interaction.isModalSubmit()) {
-            const modal = client.modals.get(interaction.customId);
-            if (modal) await modal.execute(interaction);
-        } else if (interaction.isSelectMenu()) {
-            const selectMenu = client.selectMenu.get(interaction.customId);
-            if (selectMenu) await modal.execute(interaction);
-        }
-    } catch (error) {
-        console.error('❌ Interaction Error:', error);
-        if (!interaction.replied && !interaction.deferred) {
-            await interaction.reply({ content: '⚠️ Ошибка обработки взаимодействия!', ephemeral: true }).catch(() => {});
-        }
+  try {
+    if (interaction.isChatInputCommand()) {
+      const command = client.commands.get(interaction.commandName);
+      if (command) await command.execute(interaction);
     }
+
+    else if (interaction.isButton()) {
+      const button = [...client.buttons.values()].find(b => interaction.customId.startsWith(b.customId));
+      if (button) await button.execute(interaction);
+    }
+
+    else if (interaction.isStringSelectMenu()) {
+      const menu = client.selectMenus.get(interaction.customId);
+      if (menu) await menu.execute(interaction);
+    }
+
+    else if (interaction.isModalSubmit()) {
+      const modal = client.modals.get(interaction.customId);
+      if (modal) await modal.execute(interaction);
+    }
+
+  } catch (err) {
+    console.error('❌ Interaction Error:', err);
+    if (!interaction.replied && !interaction.deferred) {
+      interaction.reply({ content: '❌ Ошибка обработки взаимодействия.', ephemeral: true }).catch(() => {});
+    }
+  }
 });
 
 client.once('ready', async () => {
