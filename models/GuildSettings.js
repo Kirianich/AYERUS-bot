@@ -10,6 +10,7 @@ const GuildSettingsSchema = new mongoose.Schema({
     {
       hypixelGuildId: String,
       hypixelGuildName: String,
+      guildRanks: [String],
       roles: {
         guildMemberRole: String,    // Applies if user is in the Hypixel guild          
         rankRoles: {
