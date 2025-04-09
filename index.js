@@ -22,6 +22,7 @@ const client = new Client({
 client.commands = new Collection();
 client.buttons = new Collection();
 client.modals = new Collection();
+client.selectMenus = new Collection();
 
 // Load slash commands
 const commandsPath = path.join(__dirname, 'commands');
@@ -51,6 +52,15 @@ fs.readdirSync(modalsPath).forEach(file => {
         console.log(`✅ Loaded modal: ${modal.customId}`);
     }
 });
+
+// Load select menu interactions
+const selectMenuFiles = loadFilesRecursively(path.join(__dirname, 'interactions/selectMenus'));
+for (const file of selectMenuFiles) {
+  const menu = require(file);
+  if (menu.customId && menu.execute) {
+    client.selectMenus.set(menu.customId, menu);
+  }
+}
 
 // Handle interactions
 client.on('interactionCreate', async interaction => {
