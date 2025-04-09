@@ -3,19 +3,35 @@ const GuildSettings = require('../../../models/GuildSettings');
 module.exports = {
     customId: 'settings_select_unverified_role',
     async execute(interaction) {
-        const selectedRoleId = interaction.values[0];
-        const guildId = interaction.guild.id;
+        try {
+            const selectedRoleId = interaction.values[0];
+            const guildId = interaction.guild.id;
 
-        await GuildSettings.findOneAndUpdate(
-            { guildId },
-            { unverifiedRole: selectedRoleId },
-            { upsert: true }
-        );
+            console.log("🔧 Selected unverified role ID:", selectedRoleId);
+            console.log("🔧 Guild ID:", guildId);
 
-        await interaction.update({
-            content: '✅ Роль для неверифицированных пользователей обновлена!',
-            embeds: [],
-            components: []
-        });
+            const result = await GuildSettings.findOneAndUpdate(
+                { guildId },
+                { unverifiedRole: selectedRoleId },
+                { upsert: true, new: true }
+            );
+
+            console.log("✅ Updated DB record:", result);
+
+            await interaction.update({
+                content: '✅ Роль для неверифицированных пользователей обновлена!',
+                embeds: [],
+                components: []
+            });
+
+        } catch (error) {
+            console.error("❌ Error updating unverified role:", error);
+            if (!interaction.replied) {
+                await interaction.reply({
+                    content: '❌ Произошла ошибка при сохранении роли.',
+                    ephemeral: true
+                });
+            }
+        }
     }
 };
