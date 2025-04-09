@@ -18,10 +18,11 @@ module.exports = {
 
             console.log("✅ Updated DB record:", result);
 
-            await interaction.update({
+            await interaction.reply({
                 content: '✅ Роль для неверифицированных пользователей обновлена!',
                 embeds: [],
-                components: []
+                components: [],
+                flags: MessageFlags.ephemeral
             });
 
         } catch (error) {
