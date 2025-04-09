@@ -1,11 +1,12 @@
-const { ActionRowBuilder, RoleSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     customId: 'settings_set_unverified_role',
     async execute(interaction) {
-        const menu = new RoleSelectMenuBuilder()
+        const menu = new StringSelectMenuBuilder()
             .setCustomId('settings_select_unverified_role')
             .setPlaceholder('Выберите роль для неверифицированных пользователей')
+            .setDefaultValues(6)
             .setMinValues(1)
             .setMaxValues(1);
 
