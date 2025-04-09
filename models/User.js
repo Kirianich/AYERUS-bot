@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
     guildId: { type: String, required: true }, //Discord Server
     hypixelGuild: { type: String, default: "None" }, // Hypixel Guild Name
     guildRank: { type: String, default: "Member" }, // Rank inside the Hypixel Guild
-    networkRank: { type: String, default: "Default" }, // Hypixel Rank
+    rank: { type: String, default: "Default" }, // Hypixel Rank
     skyblockLevel: { type: Number, default: 0 }, // Skyblock Level
     skyblockSkills: { type: Object, default: {} } // Skyblock Skill Levels
 });
