@@ -73,6 +73,14 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
+const walk = require('walkdir'); // Or a recursive function
+walk('interactions/buttons').forEach(file => {
+  const button = require(path.join(__dirname, file));
+  if (button.customId && button.execute) {
+    client.buttons.set(button.customId, button);
+  }
+});
+
 client.once('ready', async () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
     await mongoose.connect(process.env.MONGO_URI, {
