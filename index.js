@@ -2,7 +2,11 @@ const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
+const Hypixel = require('hypixel-api-reborn');
 require('dotenv').config();
+
+
+const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 const client = new Client({
     intents: [
@@ -79,6 +83,3 @@ client.once('ready', async () => {
 });
 
 client.login(process.env.TOKEN);
-
-const Hypixel = require('hypixel-api-reborn');
-const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
