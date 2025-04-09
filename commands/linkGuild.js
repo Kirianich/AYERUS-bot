@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { getGuild } = require('hypixel-api-reborn');
+const Hypixel = require('hypixel-api-reborn');
 const GuildSettings = require('../models/GuildSettings');
+const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,7 +18,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
 
         try {
-            const guild = await getGuild('name', guildName, { key: process.env.HYPIXEL_API_KEY });
+            const guild = await hypixel.getGuild('name', guildName);
             if (!guild || !guild.id || !guild.name || !guild.ranks) {
                 return interaction.editReply('❌ Не удалось получить данные гильдии. Убедитесь, что имя указано верно.');
             }
@@ -27,7 +28,7 @@ module.exports = {
                     linkedGuilds: {
                         hypixelGuildId: guild.id,
                         hypixelGuildName: guild.name,
-                        guildRanks: guild.ranks.slice(0,4),
+                        guildRanks: guild.ranks.map(rank => rank.name).slice(0,4),
                         roles: {
                             guildMemberRole: null,
                             rankRoles: {
