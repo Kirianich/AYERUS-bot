@@ -17,8 +17,6 @@ async function buildInitialSettingsMessage(guild) {
     return { embed, components: [row] };
 }
 
-module.exports = { buildInitialSettingsMessage };
-
 async function buildConfigureRolesEmbed(guild) {
   const settings = await GuildSettings.findOne({ guildId: guild.id }) || await GuildSettings.create({ guildId: guild.id });
 
@@ -32,6 +30,10 @@ async function buildConfigureRolesEmbed(guild) {
     .setColor(0x5865F2);
 
   const buttons = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+      .setCustomId('settings_go_back:main')
+      .setLabel('🔙 Назад')
+      .setStyle(ButtonStyle.Danger),
     new ButtonBuilder()
       .setCustomId('settings_set_verified_role')
       .setLabel('✅ Установить верифицированную роль')
@@ -39,14 +41,10 @@ async function buildConfigureRolesEmbed(guild) {
     new ButtonBuilder()
       .setCustomId('settings_set_unverified_role')
       .setLabel('⚠️ Установить неверифицированную роль')
-      .setStyle(ButtonStyle.Secondary),
-    new ButtonBuilder()
-      .setCustomId('settings_go_back:main')
-      .setLabel('🔙 Назад')
-      .setStyle(ButtonStyle.Danger)
+      .setStyle(ButtonStyle.Secondary)
   );
 
   return { embed, components: [buttons] };
 }
 
-module.exports = { buildConfigureRolesEmbed }
+module.exports = { buildInitialSettingsMessage, buildRoleSettingsMessage };
