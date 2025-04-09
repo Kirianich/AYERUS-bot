@@ -17,6 +17,7 @@ class Verifier {
 
       // Get player and guild info
       const player = await this.hypixel.getPlayer(username);
+      console.log(player.socialMedia);
       const guild = await this.hypixel.getGuild('player', username);
 
       const linkedDiscord = player.socialMedia?.link?.DISCORD;
