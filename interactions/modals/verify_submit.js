@@ -1,4 +1,4 @@
-const Verifier = require('../../utils/Verifier');
+const Verifier = require('../../utils/verifier');
 require('dotenv').config();
 
 module.exports = {
