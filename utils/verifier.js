@@ -20,7 +20,7 @@ class Verifier {
       console.log(player.socialMedia);
       const guild = await this.hypixel.getGuild('player', username);
 
-      const linkedDiscord = player.socialMedia?.link?.DISCORD;
+      const linkedDiscord = player.socialMedia?.links?.DISCORD;
       console.log(`Linked Hypixel Discord = ${linkedDiscord}`);
       const currentDiscord = interaction.user.username; // New username system fallback
       console.log(`User interacted Discord = ${currentDiscord}`);
