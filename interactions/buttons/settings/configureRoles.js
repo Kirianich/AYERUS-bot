@@ -23,7 +23,7 @@ module.exports = {
             new ButtonBuilder()
                 .setCustomId('settings_go_back_main')
                 .setLabel('🔙 Назад')
-                .setStyle(ButtonStyle.Danger)
+                .setStyle(ButtonStyle.Danger),
             new ButtonBuilder()
                 .setCustomId('settings_set_verified_role')
                 .setLabel('✅ Установить верифицированную роль')
@@ -31,7 +31,7 @@ module.exports = {
             new ButtonBuilder()
                 .setCustomId('settings_set_unverified_role')
                 .setLabel('⚠️ Установить неверифицированную роль')
-                .setStyle(ButtonStyle.Secondary),
+                .setStyle(ButtonStyle.Secondary)
             
         );
 
