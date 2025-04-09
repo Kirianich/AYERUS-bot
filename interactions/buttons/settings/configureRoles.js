@@ -17,7 +17,7 @@ module.exports = {
                 { name: '✅ Проверенная роль', value: settings.verifiedRole ? `<@&${settings.verifiedRole}>` : 'Не установлена', inline: true },
                 { name: '⚠️ Непроверенная роль', value: settings.unverifiedRole ? `<@&${settings.unverifiedRole}>` : 'Не установлена', inline: true }
             )
-            .setFooter('Выберите какую роль вы хотите настроить с помощью кнопок внизу')
+            .setFooter({ text: 'Выберите какую роль вы хотите настроить с помощью кнопок внизу' })
             .setColor(0x5865F2);
 
         const buttons = new ActionRowBuilder().addComponents(
