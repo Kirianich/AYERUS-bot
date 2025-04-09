@@ -13,13 +13,9 @@ const client = new Client({
     ]
 });
 
-// Load Commands, Buttons, and Modals
-client.commands = new Collection();
-client.buttons = new Collection();
-client.modals = new Collection();
-
 // Handle Interactions Properly
 client.on(Events.InteractionCreate, async interaction => {
+console.log(`✅ Interaction create initialized`);
    try {
         if (interaction.isChatInputCommand()) {
             const command = client.commands.get(interaction.commandName);
@@ -48,9 +44,5 @@ client.once('ready', async () => {
     await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log("✅ Connected to MongoDB");
 });
-try {
+
 client.login(process.env.TOKEN);
-console.log(`✅ Token processed successfuly`);
-} catch (error) {
-    console.error("❌ Error processing token:", error);
-}
