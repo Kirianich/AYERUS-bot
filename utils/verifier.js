@@ -44,7 +44,7 @@ class Verifier {
           hypixelUuid: player.uuid,
           hypixelRank: player.rank || "NONE",
           hypixelGuild: guild?.name || "None",
-          hypixelGuildRank: guild?.members.find(m => m.uuid === player.uuid)?.rank || "None"
+          hypixelGuildRank: guild?.members.find(m => m.uuid === player.uuid)?.rank.toString || "None"
         });
 
         return { success: '✅ Ваш аккаунт успешно привязан!' };
