@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { getGuild } = require('hypixel-api-reborn');
-const GuildSettings = require('../../models/GuildSettings');
+const GuildSettings = require('../models/GuildSettings');
 
 module.exports = {
     data: new SlashCommandBuilder()
