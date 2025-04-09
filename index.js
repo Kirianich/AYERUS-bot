@@ -75,7 +75,7 @@ client.on('interactionCreate', async interaction => {
       if (button) await button.execute(interaction);
     }
 
-    else if (interaction.isStringSelectMenu()) {
+    else if (interaction.isRoleSelectMenu()) {
       const menu = client.selectMenus.get(interaction.customId);
       if (menu) await menu.execute(interaction);
     }
