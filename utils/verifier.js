@@ -12,7 +12,7 @@ class Verifier {
     const discordId = interaction.user.id;
     try {
       // Check DB if already verified
-      const existingUser = await User.findOne({ discordId });
+      const existingUser = await User.findOne({ discordId: interaction.user.id });
       if (existingUser) return { error: '✅ Вы уже верифицированы!' };
 
       // Get player and guild info
