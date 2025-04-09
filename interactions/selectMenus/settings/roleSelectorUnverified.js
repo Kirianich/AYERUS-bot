@@ -23,7 +23,7 @@ module.exports = {
                 content: '✅ Роль для неверифицированных пользователей обновлена!',
                 embeds: [],
                 components: [],
-                flags: MessageFlags.ephemeral
+                flags: MessageFlags.Ephemeral
             });
 
         } catch (error) {
