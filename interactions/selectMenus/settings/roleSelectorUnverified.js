@@ -1,5 +1,5 @@
 const GuildSettings = require('../../../models/GuildSettings');
-const { MessageFlags } = require('discord.js')
+const { MessageFlags } = require('discord.js');
 
 module.exports = {
     customId: 'settings_select_unverified_role',
