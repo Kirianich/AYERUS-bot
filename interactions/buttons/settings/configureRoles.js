@@ -14,8 +14,9 @@ module.exports = {
             .setTitle('🔧 Настройка ролей верификации')
             .setDescription('Выберите, какую роль вы хотите настроить.')
             .addFields(
-                { name: '✅ Верифицированная роль', value: settings.verifiedRole ? `<@&${settings.verifiedRole}>` : 'Не установлена', inline: false },
-                { name: '⚠️ Неверифицированная роль', value: settings.unverifiedRole ? `<@&${settings.unverifiedRole}>` : 'Не установлена', inline: false }
+                { name: '✅ Проверенная роль', value: settings.verifiedRole ? `<@&${settings.verifiedRole}>` : 'Не установлена', inline: true },
+                { name: '⚠️ Непроверенная роль', value: settings.unverifiedRole ? `<@&${settings.unverifiedRole}>` : 'Не установлена', inline: true },
+                { name: 'Выберите какую роль вы хотите настроить с помощью кнопок внизу'}
             )
             .setColor(0x5865F2);
 
@@ -26,11 +27,11 @@ module.exports = {
                 .setStyle(ButtonStyle.Danger),
             new ButtonBuilder()
                 .setCustomId('settings_set_verified_role')
-                .setLabel('✅ Установить верифицированную роль')
+                .setLabel('✅ Роль проверенных')
                 .setStyle(ButtonStyle.Secondary),
             new ButtonBuilder()
                 .setCustomId('settings_set_unverified_role')
-                .setLabel('⚠️ Установить неверифицированную роль')
+                .setLabel('⚠️ Роль непроверенных')
                 .setStyle(ButtonStyle.Secondary)
             
         );
