@@ -27,6 +27,7 @@ module.exports = {
                     linkedGuilds: {
                         hypixelGuildId: guild.id,
                         hypixelGuildName: guild.name,
+                        guildRanks: guild.ranks.slice(0,4),
                         roles: {
                             guildMemberRole: null,
                             rankRoles: {
