@@ -23,14 +23,14 @@ module.exports = {
             .setDescription('Выберите роль для каждого ранга Hypixel-гильдии.')
             .setColor(0x5865F2);
 
-        const rows = guildConfig.guildRanks.slice(0, 5).map((rank, index) => {
-            return new ActionRowBuilder().addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`settings_select_rank_role:${hypixelGuildId}:${index + 1}`)
-                    .setLabel(`🎖 ${rank}`)
-                    .setStyle(ButtonStyle.Secondary)
-            );
-        });
+        // Build one row with up to 5 buttons for ranks
+        const rankButtons = guildConfig.guildRanks.slice(0, 5).map((rank, index) =>
+            new ButtonBuilder()
+                .setCustomId(`settings_select_rank_role:${hypixelGuildId}:${index + 1}`)
+                .setLabel(`🎖 ${rank}`)
+                .setStyle(ButtonStyle.Secondary)
+        );
+        const rankRow = new ActionRowBuilder().addComponents(rankButtons);
 
         const backRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
@@ -41,7 +41,7 @@ module.exports = {
 
         await interaction.update({
             embeds: [embed],
-            components: [...rows, backRow]
+            components: [rankRow, backRow]
         });
     }
 };
