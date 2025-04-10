@@ -25,7 +25,8 @@ async function buildRoleSettingsMessage(guild) {
     .setDescription('Выберите, какую роль вы хотите настроить.')
     .addFields(
       { name: '✅ Верифицированная роль', value: settings.verifiedRole ? `<@&${settings.verifiedRole}>` : 'Не установлена', inline: true },
-      { name: '⚠️ Неверифицированная роль', value: settings.unverifiedRole ? `<@&${settings.unverifiedRole}>` : 'Не установлена', inline: true }
+      { name: '⚠️ Неверифицированная роль', value: settings.unverifiedRole ? `<@&${settings.unverifiedRole}>` : 'Не установлена', inline: true },
+      { name: '🚪 Роль гостей', value: settings.guestRole ? `<@&${settings.guestRole}>` : 'Не установлена', inline: true }
     )
     .setColor(0x5865F2);
 
@@ -41,6 +42,10 @@ async function buildRoleSettingsMessage(guild) {
     new ButtonBuilder()
       .setCustomId('settings_set_unverified_role')
       .setLabel('⚠️ Установить неверифицированную роль')
+      .setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder()
+      .setCustomId('settings_set_guest_role')
+      .setLabel('🚪 Установить роль гостей')
       .setStyle(ButtonStyle.Secondary)
   );
 
