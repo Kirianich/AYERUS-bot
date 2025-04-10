@@ -28,14 +28,15 @@ module.exports = {
                     linkedGuilds: {
                         hypixelGuildId: guild.id,
                         hypixelGuildName: guild.name,
-                        guildRanks: guild.ranks.map(rank => rank.name).slice(0,4),
+                        guildRanks: guild.ranks.map(rank => rank.name).slice(0,5),
                         roles: {
                             guildMemberRole: null,
                             rankRoles: {
                                 rank1: null,
                                 rank2: null,
                                 rank3: null,
-                                rank4: null
+                                rank4: null,
+                                rank5: null
                             }
                         }
                     }
