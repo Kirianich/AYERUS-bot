@@ -22,7 +22,7 @@ module.exports = {
         const roleDescriptions = guildConfig.guildRanks.map((rank, index) => {
             const rankKey = `rank${index + 1}`;
             const roleId = rankRoles[rankKey];
-            return `**${rank}:** ${roleId ? `<@&${roleId}>` : '_Не задано_'}`;
+            return `**"${rank}":** ${roleId ? `<@&${roleId}>` : '_Не задано_'}`;
         }).join('\n');
 
         const embed = new EmbedBuilder()
