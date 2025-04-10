@@ -1,5 +1,5 @@
 const GuildSettings = require('../../../models/GuildSettings');
-const { buildGuildConfigurationPanel } = require('../../../modules/settingsUI');
+const { buildGuildRolesMessage } = require('../../../modules/settingsUI');
 
 module.exports = {
     customId: /^settings_configure_guild:.+/,
@@ -14,7 +14,7 @@ module.exports = {
             return interaction.reply({ content: '❌ Гильдия не найдена в настройках.', ephemeral: true });
         }
 
-        const { embed, components } = buildGuildConfigurationPanel(guildConfig.hypixelGuildName, hypixelGuildId);
+        const { embed, components } = buildGuildRolesMessage(guildConfig.hypixelGuildName, hypixelGuildId);
 
         await interaction.update({
             embeds: [embed],
