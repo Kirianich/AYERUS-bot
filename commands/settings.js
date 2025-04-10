@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Embed
 const { buildInitialSettingsMessage } = require('../utils/settingsUI');
 
 module.exports = {
-    if (!interaction.member.permissions.has('ManageGuild')) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
     return interaction.reply({
         content: '🚫 У вас недостаточно прав для использования этой команды.',
         ephemeral: true
