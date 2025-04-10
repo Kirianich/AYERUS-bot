@@ -71,8 +71,14 @@ client.on('interactionCreate', async interaction => {
     }
 
     else if (interaction.isButton()) {
-      const button = [...client.buttons.values()].find(b => interaction.customId.startsWith(b.customId));
-      if (button) await button.execute(interaction);
+      const button = [...client.buttons.values()].find(b => {
+          if (typeof b.customId === 'string') {
+            return interaction.customId.startsWith(b.customId);
+          } else if (b.customId instanceof RegExp) {
+            return b.customId.test(interaction.customId);
+          }
+        return false;
+      });
     }
 
     else if (interaction.isRoleSelectMenu()) {
