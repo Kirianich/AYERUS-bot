@@ -18,7 +18,8 @@ module.exports = {
             });
         }
 
-        settings.linkedGuilds[index].roles.rankRoles[rankIndex] = selectedRoleId;
+        const rankKey = `rank${rankIndex + 1}`;
+        settings.linkedGuilds[index].roles.rankRoles[rankKey] = selectedRoleId;
         await settings.save();
 
         return interaction.reply({
