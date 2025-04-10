@@ -32,7 +32,7 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(select);
         const backRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId('settings_go_back:guilds')
+                .setCustomId('settings_go_back:guildranks')
                 .setLabel('🔙 Назад')
                 .setStyle(ButtonStyle.Danger)
         );
