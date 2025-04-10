@@ -1,13 +1,8 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
-const Hypixel = require('hypixel-api-reborn');
-const { loadFilesRecursively } = require('./utils/loadFilesRecursively');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const mongoose = require('mongoose');
 require('dotenv').config();
-
-
-const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 const client = new Client({
     intents: [
@@ -18,85 +13,64 @@ const client = new Client({
     ]
 });
 
-// Setup collections for commands, buttons, and modals
 client.commands = new Collection();
 client.buttons = new Collection();
 client.modals = new Collection();
 client.selectMenus = new Collection();
 
-// Load slash commands
-const commandsPath = path.join(__dirname, 'commands');
-fs.readdirSync(commandsPath).forEach(file => {
-    const command = require(path.join(commandsPath, file));
-    if (command.data && command.execute) {
-        client.commands.set(command.data.name, command);
-        console.log(`✅ Loaded command: ${command.data.name}`);
-    }
-});
+// Recursive loader
+function loadHandlers(folder, collection) {
+    const items = fs.readdirSync(folder);
+    for (const item of items) {
+        const fullPath = path.join(folder, item);
+        const stat = fs.statSync(fullPath);
 
-// Load button interactions
-const buttonFiles = loadFilesRecursively(path.join(__dirname, 'interactions/buttons'));
-for (const file of buttonFiles) {
-  const button = require(file);
-  if (button.customId && button.execute) {
-    client.buttons.set(button.customId, button);
-  }
+        if (stat.isDirectory()) {
+            loadHandlers(fullPath, collection);
+        } else if (item.endsWith('.js')) {
+            const handler = require(fullPath);
+            if ((handler.data || handler.customId) && handler.execute) {
+                const key = handler.data?.name || handler.customId;
+                collection.set(key, handler);
+                console.log(`✅ Loaded ${key}`);
+            }
+        }
+    }
 }
 
-// Load modal interactions
-const modalsPath = path.join(__dirname, 'interactions/modals');
-fs.readdirSync(modalsPath).forEach(file => {
-    const modal = require(path.join(modalsPath, file));
-    if (modal.customId && modal.execute) {
-        client.modals.set(modal.customId, modal);
-        console.log(`✅ Loaded modal: ${modal.customId}`);
-    }
-});
+loadHandlers(path.join(__dirname, 'commands'), client.commands);
+loadHandlers(path.join(__dirname, 'interactions/buttons'), client.buttons);
+loadHandlers(path.join(__dirname, 'interactions/modals'), client.modals);
+loadHandlers(path.join(__dirname, 'interactions/selectMenus'), client.selectMenus);
 
-// Load select menu interactions
-const selectMenuFiles = loadFilesRecursively(path.join(__dirname, 'interactions/selectMenus'));
-for (const file of selectMenuFiles) {
-  const menu = require(file);
-  if (menu.customId && menu.execute) {
-    client.selectMenus.set(menu.customId, menu);
-  }
-}
-
-// Handle interactions
 client.on('interactionCreate', async interaction => {
-  try {
-    if (interaction.isChatInputCommand()) {
-      const command = client.commands.get(interaction.commandName);
-      if (command) await command.execute(interaction);
+    try {
+        if (interaction.isChatInputCommand()) {
+            const command = client.commands.get(interaction.commandName);
+            if (command) await command.execute(interaction);
+        } else if (interaction.isButton()) {
+            const button = [...client.buttons.values()].find(b => {
+                if (typeof b.customId === 'string') {
+                    return interaction.customId.startsWith(b.customId);
+                } else if (b.customId instanceof RegExp) {
+                    return b.customId.test(interaction.customId);
+                }
+                return false;
+            });
+            if (button) await button.execute(interaction);
+        } else if (interaction.isModalSubmit()) {
+            const modal = client.modals.get(interaction.customId);
+            if (modal) await modal.execute(interaction);
+        } else if (interaction.isRoleSelectMenu()) {
+            const menu = client.selectMenus.get(interaction.customId);
+            if (menu) await menu.execute(interaction);
+        }
+    } catch (error) {
+        console.error('❌ Interaction Error:', error);
+        if (!interaction.replied && !interaction.deferred) {
+            await interaction.reply({ content: '⚠️ Произошла ошибка при обработке взаимодействия.', ephemeral: true }).catch(() => {});
+        }
     }
-
-    else if (interaction.isButton()) {
-      const button = [...client.buttons.values()].find(b => {
-          if (typeof b.customId === 'string') {
-            return interaction.customId.startsWith(b.customId);
-          } else if (b.customId instanceof RegExp) {
-            return b.customId.test(interaction.customId);
-          }
-        return false;
-      });
-    }
-
-    else if (interaction.isRoleSelectMenu()) {
-      const menu = client.selectMenus.get(interaction.customId);
-      if (menu) await menu.execute(interaction);
-    }
-
-    else if (interaction.isModalSubmit()) {
-      const modal = client.modals.get(interaction.customId);
-      if (modal) await modal.execute(interaction);
-    }
-
-  } catch (err) {
-    console.error('❌ Interaction Error:', err);
-    if (!interaction.replied && !interaction.deferred) {
-      interaction.reply({ content: '❌ Ошибка обработки взаимодействия.', ephemeral: true }).catch(() => {});
-    }
-  }
 });
 
 client.once('ready', async () => {
@@ -105,7 +79,7 @@ client.once('ready', async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
-    console.log("✅ Connected to MongoDB");
+    console.log('✅ Connected to MongoDB');
 });
 
 client.login(process.env.TOKEN);
