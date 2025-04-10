@@ -6,7 +6,7 @@ module.exports = {
     async execute(interaction) {
         try {
             const selectedRoleId = interaction.values[0];
-            const guildId = interaction.guild.id;
+            const dsicordGuildId = interaction.guild.id;
 
             console.log("🔧 Selected unverified role ID:", selectedRoleId);
             console.log("🔧 Guild ID:", guildId);
