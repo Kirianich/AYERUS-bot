@@ -20,7 +20,7 @@ module.exports = {
         }
 
         const rankName = guildConfig.guildRanks[rankIndex];
-        const currentRoleId = guildConfig.rankRoles?.[rankIndex] || 'Не назначена';
+        const currentRoleId = guildConfig.roles.rankRoles?.[rankIndex] || 'Не назначена';
 
         const embed = new EmbedBuilder()
             .setTitle(`🎖 Настройка роли для ранга: ${rankName}`)
