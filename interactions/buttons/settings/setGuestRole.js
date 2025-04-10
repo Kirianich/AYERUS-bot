@@ -18,9 +18,13 @@ module.exports = {
                 .setStyle(ButtonStyle.Danger)
         );
 
+        const embed = new EmbedBuilder()
+            .setTitle('📌 Пожалуйста, выберите новую роль для **гостей**:')
+            .setColor(0x5865F2);
+        
         await interaction.update({
-            content: '📌 Пожалуйста, выберите роль для **гостей** (нечленов Hypixel-гильдии):',
-            embeds: [],
+            content: '',
+            embeds: [embed],
             components: [row, backRow]
         });
     }
