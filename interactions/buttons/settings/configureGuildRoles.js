@@ -5,7 +5,7 @@ const { buildInitialSettingsMessage, buildGuildSelectPanel } = require('../../..
 module.exports = {
   customId: 'settings_configure_guild_roles',
   async execute(interaction) {
-  const { embed, components } = await buildGuildSelectPanel(guild);
+  const { embed, components } = await buildGuildSelectPanel(interaction.guild);
   await interaction.update({ embeds: [embed], components });
   }
 };
