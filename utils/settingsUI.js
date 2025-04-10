@@ -66,7 +66,7 @@ async function buildGuildSelectPanel(guild) {
     const rows = settings.linkedGuilds.map(guild => {
         return new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId(`settings_configure_guild_ranks:${guild.hypixelGuildId}`)
+                .setCustomId(`settings_configure_guild:${guild.hypixelGuildId}`)
                 .setLabel(`⚙️ Настроить ранги - ${guild.hypixelGuildName}`)
                 .setStyle(ButtonStyle.Primary)
         );
