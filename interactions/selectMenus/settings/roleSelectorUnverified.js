@@ -9,7 +9,7 @@ module.exports = {
             const dsicordGuildId = interaction.guild.id;
 
             console.log("🔧 Selected unverified role ID:", selectedRoleId);
-            console.log("🔧 Guild ID:", guildId);
+            console.log("🔧 Guild ID:", discordGuildId);
 
             const result = await GuildSettings.findOneAndUpdate(
                 { discordGuildId },
