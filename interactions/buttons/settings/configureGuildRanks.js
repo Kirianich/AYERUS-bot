@@ -18,12 +18,19 @@ module.exports = {
             });
         }
 
+        const rankRoles = guildConfig.roles?.rankRoles || {};
+        const roleDescriptions = guildConfig.guildRanks.map((rank, index) => {
+            const rankKey = `rank${index + 1}`;
+            const roleId = rankRoles[rankKey];
+            return `**${rank}:** ${roleId ? `<@&${roleId}>` : '_Не задано_'}`;
+        }).join('\n');
+
         const embed = new EmbedBuilder()
             .setTitle(`⚙️ Настройка ролей: ${guildConfig.hypixelGuildName}`)
-            .setDescription('Выберите роль для каждого ранга Hypixel-гильдии.')
+            .setDescription('Ниже отображены текущие привязки ролей к рангам Hypixel-гильдии.')
+            .addFields({ name: '🎖 Ранги и роли', value: roleDescriptions })
             .setColor(0x5865F2);
 
-        // Build one row with up to 5 buttons for ranks
         const rankButtons = guildConfig.guildRanks.slice(0, 5).map((rank, index) =>
             new ButtonBuilder()
                 .setCustomId(`settings_select_rank_role:${hypixelGuildId}:${index + 1}`)
