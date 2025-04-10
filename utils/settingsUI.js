@@ -1,6 +1,8 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const GuildSettings = require('../models/GuildSettings');
 
+const settings = await GuildSettings.findOne({ discordGuildId: guild.id }) || await GuildSettings.create({ discordGuildId: guild.id });
+
 async function buildInitialSettingsMessage(guild) {
     const embed = new EmbedBuilder()
         .setTitle('⚙️ Настройки бота')
@@ -22,7 +24,6 @@ async function buildInitialSettingsMessage(guild) {
 }
 
 async function buildRoleSettingsMessage(guild) {
-  const settings = await GuildSettings.findOne({ discordGuildId: guild.id }) || await GuildSettings.create({ discordGuildId: guild.id });
 
   const embed = new EmbedBuilder()
     .setTitle('🔧 Настройка ролей верификации')
