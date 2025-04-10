@@ -5,7 +5,7 @@ module.exports = {
     async execute(interaction) {
         try {
             const selectedRoleId = interaction.values[0];
-            const guildId = interaction.guild.id;
+            const discordGuildId = interaction.guild.id;
 
             await GuildSettings.findOneAndUpdate(
                 { discordGuildId: guildId },
