@@ -30,7 +30,7 @@ class Verifier {
         return { error: `❌ Ваш привязанный Discord (${linkedDiscord || 'не указан'}) не совпадает с текущим!` };
       }
 
-      const settings = await GuildSettings.findOne({ guildId: interaction.guild.id });
+      const settings = await GuildSettings.findOne({ discordGuildId: interaction.guild.id });
       if (!settings || !settings.verifiedRole) {
         return { error: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`' };
       }
