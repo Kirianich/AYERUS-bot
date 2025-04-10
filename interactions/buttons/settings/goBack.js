@@ -15,6 +15,11 @@ module.exports = {
             return interaction.update({ embeds: [embed], components });
         }
 
+         if (target === 'guilds') {
+            const { embed, components } = await buildGuildSelectPanel(interaction.guild);
+            return interaction.update({ embeds: [embed], components });
+        }
+
         return interaction.reply({ content: '❌ Не удалось вернуться назад.', ephemeral: true });
     }
 };
