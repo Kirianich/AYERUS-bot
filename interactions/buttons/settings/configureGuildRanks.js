@@ -34,7 +34,7 @@ module.exports = {
 
         const backRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId('settings_go_back:main')
+                .setCustomId('settings_go_back:guilds')
                 .setLabel('🔙 Назад')
                 .setStyle(ButtonStyle.Danger)
         );
