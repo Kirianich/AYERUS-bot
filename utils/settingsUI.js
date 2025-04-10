@@ -18,7 +18,7 @@ async function buildInitialSettingsMessage(guild) {
 }
 
 async function buildRoleSettingsMessage(guild) {
-  const settings = await GuildSettings.findOne({ guildId: guild.id }) || await GuildSettings.create({ guildId: guild.id });
+  const settings = await GuildSettings.findOne({ discordGuildId: guild.id }) || await GuildSettings.create({ discordGuildId: guild.id });
 
   const embed = new EmbedBuilder()
     .setTitle('🔧 Настройка ролей верификации')
