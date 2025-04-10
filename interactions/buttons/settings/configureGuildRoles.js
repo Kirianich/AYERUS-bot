@@ -1,6 +1,6 @@
 const GuildSettings = require('../../../models/GuildSettings');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
-const { buildInitialSettingsMessage } = require('../../utils/settingsUI');
+const { buildInitialSettingsMessage } = require('../../../utils/settingsUI');
 
 module.exports = {
     customId: 'settings_configure_guild_roles',
