@@ -1,5 +1,5 @@
 const GuildSettings = require('../../../models/GuildSettings');
-const { buildGuildRolesMessage } = require('../../modules/settingsUI');
+const { buildGuildRolesMessage } = require('../../../utils/settingsUI');
 
 module.exports = {
     customId: /^settings_configure_guild:.+/,
