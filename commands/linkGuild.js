@@ -4,6 +4,12 @@ const GuildSettings = require('../models/GuildSettings');
 const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 module.exports = {
+    if (!interaction.member.permissions.has('ManageGuild')) {
+    return interaction.reply({
+        content: '🚫 У вас недостаточно прав для использования этой команды.',
+        ephemeral: true
+    });
+}
     data: new SlashCommandBuilder()
         .setName('link-guild')
         .setDescription('🔗 Привязать Hypixel гильдию к серверу')
