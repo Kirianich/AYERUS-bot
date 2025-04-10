@@ -12,7 +12,7 @@ module.exports = {
             console.log("🔧 Guild ID:", guildId);
 
             const result = await GuildSettings.findOneAndUpdate(
-                { guildId },
+                { discordGuildId },
                 { unverifiedRole: selectedRoleId },
                 { upsert: true, new: true }
             );
