@@ -1,4 +1,4 @@
-const { buildInitialSettingsMessage, buildRoleSettingsMessage, buildGuildSelectPanel } = require('../../../utils/settingsUI');
+const { buildInitialSettingsMessage, buildRoleSettingsMessage, buildGuildSelectPanel, buildGuildRolesMessage } = require('../../../utils/settingsUI');
 
 module.exports = {
     customId: 'settings_go_back',
@@ -17,6 +17,11 @@ module.exports = {
 
          if (target === 'guilds') {
             const { embed, components } = await buildGuildSelectPanel(interaction.guild);
+            return interaction.update({ embeds: [embed], components });
+        }
+
+        if (target === 'guildroles') {
+            const { embed, components } = await buildGuildRolesMessage(interaction.guild);
             return interaction.update({ embeds: [embed], components });
         }
 
