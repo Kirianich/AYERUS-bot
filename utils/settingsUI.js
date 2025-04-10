@@ -10,7 +10,7 @@ async function buildInitialSettingsMessage(guild) {
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId('settings_configure_roles')
-            .setLabel('⚙️ Настроить роли верификации')
+            .setLabel('⚙️ Основные роли')
             .setStyle(ButtonStyle.Primary)
     );
 
