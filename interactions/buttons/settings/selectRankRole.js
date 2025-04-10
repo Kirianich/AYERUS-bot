@@ -20,11 +20,12 @@ module.exports = {
         }
 
         const rankName = guildConfig.guildRanks[rankIndex];
-        const currentRoleId = guildConfig.roles.rankRoles?.[rankIndex] || 'Не назначена';
+        const rankKey = `rank${rankIndex + 1}`;
+        const currentRoleId = guildConfig.roles?.rankRoles?.[rankKey] || 'Не назначена';
 
         const embed = new EmbedBuilder()
             .setTitle(`🎖 Настройка роли для ранга: ${rankName}`)
-            .setDescription(`Текущая роль: <@&${currentRoleId}>\nВыберите новую роль для этого ранга.`)
+            .setDescription(`Текущая роль: ${currentRoleId ? `<@&${currentRoleId}>` : 'Не назначена'}\\nВыберите новую роль для этого ранга.`)
             .setColor(0x5865F2);
 
         const selectMenu = new RoleSelectMenuBuilder()
