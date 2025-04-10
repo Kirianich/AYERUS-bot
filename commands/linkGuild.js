@@ -4,7 +4,7 @@ const GuildSettings = require('../models/GuildSettings');
 const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 module.exports = {
-    if (!interaction.member.permissions.has('ManageGuild')) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
     return interaction.reply({
         content: '🚫 У вас недостаточно прав для использования этой команды.',
         ephemeral: true
