@@ -13,10 +13,11 @@ module.exports = {
                 { upsert: true }
             );
 
-            await interaction.update({
+            await interaction.reply({
                 content: '✅ Роль для гостей успешно обновлена!',
                 embeds: [],
-                components: []
+                components: [],
+                flags: MessageFlags.Ephemeral
             });
         } catch (error) {
             console.error("❌ Ошибка при обновлении роли для гостей:", error);
