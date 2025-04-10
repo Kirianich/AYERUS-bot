@@ -2,6 +2,12 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Embed
 const { buildInitialSettingsMessage } = require('../utils/settingsUI');
 
 module.exports = {
+    if (!interaction.member.permissions.has('ManageGuild')) {
+    return interaction.reply({
+        content: '🚫 У вас недостаточно прав для использования этой команды.',
+        ephemeral: true
+    });
+}
     data: new SlashCommandBuilder()
         .setName('settings')
         .setDescription('Configure bot settings for this server'),
