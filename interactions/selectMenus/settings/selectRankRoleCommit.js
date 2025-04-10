@@ -9,21 +9,20 @@ module.exports = {
         const guildId = interaction.guild.id;
 
         const settings = await GuildSettings.findOne({ discordGuildId: guildId });
-        const guildConfig = settings?.linkedGuilds.find(g => g.hypixelGuildId === hypixelGuildId);
+        const index = settings?.linkedGuilds.findIndex(g => g.hypixelGuildId === hypixelGuildId);
 
-        if (!guildConfig) {
+        if (!settings || index === -1) {
             return interaction.reply({
                 content: '❌ Не удалось найти настройки указанной гильдии.',
                 ephemeral: true
             });
         }
 
-        if (!guildConfig.rankRoles) guildConfig.rankRoles = [];
-        guildConfig.rankRoles[rankIndex] = selectedRoleId;
+        settings.linkedGuilds[index].roles.rankRoles[rankIndex] = selectedRoleId;
         await settings.save();
 
         return interaction.reply({
-            content: `✅ Роль успешно назначена для ранга **${guildConfig.guildRanks[rankIndex]}**: <@&${selectedRoleId}>`,
+            content: `✅ Роль успешно назначена для ранга **${settings.linkedGuilds[index].guildRanks[rankIndex]}**: <@&${selectedRoleId}>`,
             ephemeral: true
         });
     }
