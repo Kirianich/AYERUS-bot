@@ -25,7 +25,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle(`🎖 Настройка роли для ранга: ${rankName}`)
-            .setDescription(`Текущая роль: ${currentRoleId ? `<@&${currentRoleId}>` : 'Не назначена'}\\nВыберите новую роль для этого ранга.`)
+            .setDescription(`Текущая роль: ${currentRoleId ? `<@&${currentRoleId}>` : 'Не назначена'}\n Выберите новую роль для этого ранга.`)
             .setColor(0x5865F2);
 
         const selectMenu = new RoleSelectMenuBuilder()
