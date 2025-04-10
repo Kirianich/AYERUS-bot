@@ -82,5 +82,10 @@ async function buildGuildSelectPanel(guild) {
     return { embed, components: [...rows, backRow] };
 }
 
+async function buildGuildRolesMessage(guild) {
+    
+    return { embed, components: [row] };
+}
 
-module.exports = { buildInitialSettingsMessage, buildRoleSettingsMessage, buildGuildSelectPanel };
+
+module.exports = { buildInitialSettingsMessage, buildRoleSettingsMessage, buildGuildSelectPanel, buildGuildRolesMessage };
