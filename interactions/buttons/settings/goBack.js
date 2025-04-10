@@ -1,4 +1,4 @@
-const { buildInitialSettingsMessage, buildRoleSettingsMessage } = require('../../../utils/settingsUI');
+const { buildInitialSettingsMessage, buildRoleSettingsMessage, buildGuildSelectPanel } = require('../../../utils/settingsUI');
 
 module.exports = {
     customId: 'settings_go_back',
