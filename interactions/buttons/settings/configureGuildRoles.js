@@ -3,6 +3,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('
 const { buildInitialSettingsMessage, buildGuildSelectPanel } = require('../../../utils/settingsUI');
 
 module.exports = {
+  customId: 'settings_configure_guild_roles',
   async execute(interaction) {
   const { embed, components } = await buildGuildSelectPanel(settings);
   await interaction.update({ embeds: [embed], components });
