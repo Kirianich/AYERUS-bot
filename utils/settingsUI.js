@@ -56,4 +56,30 @@ async function buildRoleSettingsMessage(guild) {
   return { embed, components: [buttons] };
 }
 
-module.exports = { buildInitialSettingsMessage, buildRoleSettingsMessage };
+async function buildGuildSelectPanel(settings) {
+    const embed = new EmbedBuilder()
+        .setTitle('🎖 Настройка ролей гильдии')
+        .setDescription('Выберите Hypixel-гильдию для настройки ролей рангов:')
+        .setColor(0x5865F2);
+
+    const rows = settings.linkedGuilds.map(guild => {
+        return new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId(`settings_configure_guild_ranks:${guild.hypixelGuildId}`)
+                .setLabel(`⚙️ Настроить ранги - ${guild.hypixelGuildName}`)
+                .setStyle(ButtonStyle.Primary)
+        );
+    });
+
+    const backRow = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId('settings_go_back:main')
+            .setLabel('🔙 Назад')
+            .setStyle(ButtonStyle.Danger)
+    );
+
+    return { embed, components: [...rows, backRow] };
+}
+
+
+module.exports = { buildInitialSettingsMessage, buildRoleSettingsMessage, buildGuildSelectPanel };
