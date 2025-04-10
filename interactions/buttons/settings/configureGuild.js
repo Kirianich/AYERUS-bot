@@ -1,5 +1,5 @@
 const GuildSettings = require('../../../models/GuildSettings');
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { buildGuildConfigurationPanel } = require('../../../modules/settingsUI');
 
 module.exports = {
     customId: /^settings_configure_guild:.+/,
@@ -14,32 +14,11 @@ module.exports = {
             return interaction.reply({ content: '❌ Гильдия не найдена в настройках.', ephemeral: true });
         }
 
-        const embed = new EmbedBuilder()
-            .setTitle(`⚙️ Настройка гильдии: ${guildConfig.hypixelGuildName}`)
-            .setDescription('Выберите настройку, которую вы хотите изменить:')
-            .setColor(0x5865F2);
-
-        const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId(`settings_configure_guild_ranks:${hypixelGuildId}`)
-                .setLabel('🎖 Настроить ранги гильдии')
-                .setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder()
-                .setCustomId(`settings_set_guild_member_role:${hypixelGuildId}`)
-                .setLabel('👥 Роль участников гильдии')
-                .setStyle(ButtonStyle.Secondary)
-        );
-
-        const row2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId('settings_go_back:guilds')
-                .setLabel('🔙 Назад')
-                .setStyle(ButtonStyle.Danger)
-        );
+        const { embed, components } = buildGuildConfigurationPanel(guildConfig.hypixelGuildName, hypixelGuildId);
 
         await interaction.update({
             embeds: [embed],
-            components: [row1, row2]
+            components
         });
     }
 };
