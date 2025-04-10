@@ -56,7 +56,8 @@ const settings = await GuildSettings.findOne({ discordGuildId: guild.id }) || aw
   return { embed, components: [buttons] };
 }
 
-async function buildGuildSelectPanel(settings) {
+async function buildGuildSelectPanel(guild) {
+    const settings = await GuildSettings.findOne({ discordGuildId: guild.id }) || await GuildSettings.create({ discordGuildId: guild.id });
     const embed = new EmbedBuilder()
         .setTitle('🎖 Настройка ролей гильдии')
         .setDescription('Выберите Hypixel-гильдию для настройки ролей рангов:')
