@@ -8,7 +8,7 @@ module.exports = {
             const discordGuildId = interaction.guild.id;
 
             await GuildSettings.findOneAndUpdate(
-                { discordGuildId: guildId },
+                { discordGuildId },
                 { guestRole: selectedRoleId },
                 { upsert: true }
             );
