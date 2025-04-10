@@ -1,5 +1,5 @@
 const GuildSettings = require('../../../models/GuildSettings');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const { buildInitialSettingsMessage } = require('../../utils/settingsUI');
 
 module.exports = {
@@ -8,11 +8,22 @@ module.exports = {
         const guildId = interaction.guild.id;
         const settings = await GuildSettings.findOne({ discordGuildId: guildId });
 
+        const backRow = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId('settings_go_back:root')
+                .setLabel('🔙 Назад')
+                .setStyle(ButtonStyle.Danger)
+        );
+
         if (!settings || !settings.linkedGuilds || settings.linkedGuilds.length === 0) {
+            const embed = new EmbedBuilder()
+            .setTitle('❌ Нет привязанных гильдий для настройки.')
+            .setColor(0x5865F2);
+            
             return interaction.update({
-                content: '❌ Нет привязанных гильдий для настройки.',
-                embeds: [],
-                components: []
+                content: '',
+                embeds: [embed],
+                components: [backRow]
             });
         }
 
@@ -25,16 +36,13 @@ module.exports = {
             );
         });
 
-        const backRow = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId('settings_go_back:root')
-                .setLabel('🔙 Назад')
-                .setStyle(ButtonStyle.Danger)
-        );
-
+        const embed = new EmbedBuilder()
+            .setTitle('🎖 Выберите Hypixel-гильдию для настройки ролей рангов:')
+            .setColor(0x5865F2);
+        
         await interaction.update({
-            content: '🎖 Выберите Hypixel-гильдию для настройки ролей рангов:',
-            embeds: [],
+            content: '',
+            embeds: [embed],
             components: [...rows, backRow]
         });
     }
