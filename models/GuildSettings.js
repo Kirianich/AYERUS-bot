@@ -17,7 +17,8 @@ const GuildSettingsSchema = new mongoose.Schema({
           rank1: String,            // For top rank (excluding GM)
           rank2: String,
           rank3: String,
-          rank4: String
+          rank4: String,
+          rank5: String
         }
       }
     }
