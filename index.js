@@ -62,7 +62,14 @@ client.on('interactionCreate', async interaction => {
             const modal = client.modals.get(interaction.customId);
             if (modal) await modal.execute(interaction);
         } else if (interaction.isRoleSelectMenu()) {
-            const menu = client.selectMenus.get(interaction.customId);
+            const menu = [...client.selectMenus.values()].find(m => {
+        if (typeof m.customId === 'string') {
+            return interaction.customId === m.customId;
+        } else if (m.customId instanceof RegExp) {
+            return m.customId.test(interaction.customId);
+        }
+        return false;
+    });
             if (menu) await menu.execute(interaction);
         }
     } catch (error) {
