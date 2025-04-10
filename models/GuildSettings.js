@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const GuildSettingsSchema = new mongoose.Schema({
-    guildId: { type: String, required: true, unique: true },
+    discordGuildId: { type: String, required: true, unique: true },
     verifiedRole: { type: String, default: null },
     unverifiedRole: { type: String, default: null },
     guestRole: { type: String, default: null }, // Applies if user is NOT in any linked guild
