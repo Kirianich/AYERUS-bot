@@ -18,7 +18,7 @@ module.exports = {
 
         await interaction.update({
             embeds: [embed],
-            components: [row1, row2]
+            components
         });
     }
 };
