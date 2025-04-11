@@ -4,7 +4,7 @@ const GuildSettings = require('../../../models/GuildSettings');
 module.exports = {
     customId: 'settings_configure_roles',
     async execute(interaction) {
-    const settings = await GuildSettings.findOne({ discordGuildId: guild.id }) || await GuildSettings.create({ discordGuildId: guild.id });
+    const settings = await GuildSettings.findOne({ discordGuildId: interaction.guild.id }) || await GuildSettings.create({ discordGuildId: interaction.guild.id });
     
   const embed = new EmbedBuilder()
     .setTitle('🔧 Настройка ролей верификации')
@@ -34,6 +34,6 @@ module.exports = {
       .setLabel('🚪 Установить роль гостей')
       .setStyle(ButtonStyle.Secondary)
   );
-        await interaction.update({ embeds: [embed], components });
+        await interaction.update({ embeds: [embed], components: [buttons] });
     }
 };
