@@ -32,7 +32,7 @@ module.exports = {
 
     const row2 = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-            .setCustomId('settings_go_back:guilds')
+            .setCustomId('settings_configure_guild_roles')
             .setLabel('🔙 Назад')
             .setStyle(ButtonStyle.Danger)
     );
