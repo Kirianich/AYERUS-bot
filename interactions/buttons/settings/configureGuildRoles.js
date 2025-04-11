@@ -4,7 +4,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('
 module.exports = {
   customId: 'settings_configure_guild_roles',
   async execute(interaction) {
-  const settings = await GuildSettings.findOne({ discordGuildId: guild.id }) || await GuildSettings.create({ discordGuildId: guild.id });
+  const settings = await GuildSettings.findOne({ discordGuildId: interaction.guild.id }) || await GuildSettings.create({ discordGuildId: interaction.guild.id });
     const embed = new EmbedBuilder()
         .setTitle('🎖 Настройка ролей гильдии')
         .setDescription('Выберите Hypixel-гильдию для настройки ролей рангов:')
