@@ -36,5 +36,6 @@ module.exports = {
             .setLabel('🔙 Назад')
             .setStyle(ButtonStyle.Danger)
     );
+        await interaction.update({ embeds: [embed], components: [row1, row2] });
     }
 };
