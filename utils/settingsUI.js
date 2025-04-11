@@ -82,19 +82,19 @@ async function buildGuildSelectPanel(guild) {
     return { embed, components: [...rows, backRow] };
 }
 
-async function buildGuildRolesMessage(guildName, hypixelGuildId) {
+async function buildGuildRolesMessage(guild) {
     const embed = new EmbedBuilder()
-        .setTitle(`⚙️ Настройка гильдии: ${guildName}`)
+        .setTitle(`⚙️ Настройка гильдии: ${guild.hypixelGuildName}`)
         .setDescription('Выберите настройку, которую вы хотите изменить:')
         .setColor(0x5865F2);
 
     const row1 = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-            .setCustomId(`settings_configure_guild_ranks:${hypixelGuildId}`)
+            .setCustomId(`settings_configure_guild_ranks:${guild.hypixelGuildId}`)
             .setLabel('🎖 Настроить ранги гильдии')
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
-            .setCustomId(`settings_set_guild_member_role:${hypixelGuildId}`)
+            .setCustomId(`settings_set_guild_member_role:${guild.hypixelGuildId}`)
             .setLabel('👥 Роль участников гильдии')
             .setStyle(ButtonStyle.Secondary)
     );
