@@ -10,51 +10,75 @@ class Verifier {
 
   async verifyUser(interaction, username) {
     const discordId = interaction.user.id;
+    const guildId = interaction.guild.id;
+
     try {
-      // Check DB if already verified
-      const existingUser = await User.findOne({ discordId: interaction.user.id });
+      const existingUser = await User.findOne({ discordId });
       if (existingUser) return { error: '✅ Вы уже верифицированы!' };
 
-      // Get player and guild info
       const player = await this.hypixel.getPlayer(username);
-      console.log(player.socialMedia);
       const guild = await this.hypixel.getGuild('player', username);
 
       const discordEntry = player.socialMedia.find(social => social.id === 'DISCORD');
       const linkedDiscord = discordEntry?.link;
-      console.log(`Linked Hypixel Discord = ${linkedDiscord}`);
-      const currentDiscord = interaction.user.username; // New username system fallback
-      console.log(`User interacted Discord = ${currentDiscord}`);
+      const currentDiscord = interaction.user.username;
 
       if (!linkedDiscord || linkedDiscord !== currentDiscord) {
         return { error: `❌ Ваш привязанный Discord (${linkedDiscord || 'не указан'}) не совпадает с текущим!` };
       }
 
-      const settings = await GuildSettings.findOne({ discordGuildId: interaction.guild.id });
+      const settings = await GuildSettings.findOne({ discordGuildId: guildId });
       if (!settings || !settings.verifiedRole) {
         return { error: '❌ Роль верифицированных пользователей не настроена. Используйте `/setverifiedrole`' };
       }
 
-      const role = interaction.guild.roles.cache.get(settings.verifiedRole);
       const member = await interaction.guild.members.fetch(discordId);
 
-      if (role && member) {
-        await member.roles.add(role);
+      // Assign Verified Role
+      const verifiedRole = interaction.guild.roles.cache.get(settings.verifiedRole);
+      if (verifiedRole) await member.roles.add(verifiedRole);
 
-        await User.create({
-          discordId,
-          username,
-          guildId: interaction.guild.id,
-          hypixelUuid: player.uuid,
-          hypixelRank: player.rank || "NONE",
-          hypixelGuild: guild?.name || "None",
-          hypixelGuildRank: guild?.members.find(m => m.uuid === player.uuid)?.rank || "None"
-        });
-
-        return { success: '✅ Ваш аккаунт успешно привязан!' };
-      } else {
-        return { error: '❌ Не удалось назначить роль.' };
+      // Remove Unverified Role if set
+      if (settings.unverifiedRole) {
+        const unverifiedRole = interaction.guild.roles.cache.get(settings.unverifiedRole);
+        if (unverifiedRole) await member.roles.remove(unverifiedRole);
       }
+
+      let isInLinkedGuild = false;
+
+      if (settings.linkedGuilds && guild) {
+        const guildConfig = settings.linkedGuilds.find(g => g.hypixelGuildId === guild.id);
+        if (guildConfig) {
+          isInLinkedGuild = true;
+
+          // Assign guild member role
+          const memberRole = interaction.guild.roles.cache.get(guildConfig.roles.guildMemberRole);
+          if (memberRole) await member.roles.add(memberRole);
+
+          // Assign guild rank role if available
+          const guildRank = guild.members.find(m => m.uuid === player.uuid)?.rank;
+          const rankRoleId = guildConfig.roles.rankRoles?.[guildRank];
+          const rankRole = interaction.guild.roles.cache.get(rankRoleId);
+          if (rankRole) await member.roles.add(rankRole);
+        }
+      }
+
+      if (!isInLinkedGuild && settings.guestRole) {
+        const guestRole = interaction.guild.roles.cache.get(settings.guestRole);
+        if (guestRole) await member.roles.add(guestRole);
+      }
+
+      await User.create({
+        discordId,
+        username,
+        guildId,
+        hypixelUuid: player.uuid,
+        hypixelRank: player.rank || "NONE",
+        hypixelGuild: guild?.name || "None",
+        hypixelGuildRank: guild?.members.find(m => m.uuid === player.uuid)?.rank || "None"
+      });
+
+      return { success: '✅ Ваш аккаунт успешно привязан!' };
     } catch (error) {
       console.error("Verifier Error:", error);
       return { error: '❌ Ошибка при верификации. Попробуйте позже.' };
