@@ -1,5 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const GuildSettings = require('../../models/GuildSettings');
+const GuildSettings = require('../../../models/GuildSettings');
 
 module.exports = {
     customId: 'settings_configure_roles',
