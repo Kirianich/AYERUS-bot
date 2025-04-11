@@ -13,7 +13,7 @@ module.exports = {
 
         const backRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId('settings_go_back:roles')
+                .setCustomId('settings_configure_roles')
                 .setLabel('🔙 Назад')
                 .setStyle(ButtonStyle.Danger)
         );
