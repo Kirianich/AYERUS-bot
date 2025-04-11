@@ -24,7 +24,7 @@ module.exports = {
             .setColor(0x5865F2);
 
         const select = new RoleSelectMenuBuilder()
-            .setCustomId(`select_guild_member_role_commit:${hypixelGuildId}`)
+            .setCustomId(`settings_select_guild_member_role_commit:${hypixelGuildId}`)
             .setPlaceholder('Выберите роль...')
             .setMinValues(1)
             .setMaxValues(1);
