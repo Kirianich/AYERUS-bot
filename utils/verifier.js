@@ -58,9 +58,12 @@ class Verifier {
           const memberRole = interaction.guild.roles.cache.get(guildConfig.roles.guildMemberRole);
           if (memberRole) await member.roles.add(memberRole);
 
-          // Assign guild rank role if mapped
-          if (userGuildRank && guildConfig.roles.rankRoles) {
-            const rankRoleId = guildConfig.roles.rankRoles[userGuildRank];
+          // Match user's guild rank to index in guildRanks
+          const rankIndex = guildConfig.guildRanks.findIndex(rank => rank === userGuildRank);
+
+          if (rankIndex !== -1) {
+            const rankKey = `rank${rankIndex + 1}`;
+            const rankRoleId = guildConfig.roles.rankRoles?.[rankKey];
             const rankRole = interaction.guild.roles.cache.get(rankRoleId);
             if (rankRole) await member.roles.add(rankRole);
           }
