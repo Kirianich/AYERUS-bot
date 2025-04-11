@@ -17,7 +17,7 @@ module.exports = {
             });
         }
 
-        const currentRoleId = guildConfig.roles?.memberRole;
+        const currentRoleId = guildConfig.roles?.guildMemberRole;
         const embed = new EmbedBuilder()
             .setTitle(`⚙️ Роль участников гильдии`)
             .setDescription(`Текущая роль: ${currentRoleId ? `<@&${currentRoleId}>` : '_Не назначена_'}\nВыберите новую роль для участников этой Hypixel-гильдии.`)
