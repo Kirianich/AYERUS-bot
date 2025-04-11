@@ -16,6 +16,8 @@ module.exports = {
 
         const { embed, components } = buildGuildRolesMessage(guildConfig.hypixelGuildName, hypixelGuildId);
 
+        console.log('Embed:', embed?.data?.title || typeof embed);
+        console.log('Components:', components?.length);
         await interaction.update({
             embeds: [embed],
             components: components
