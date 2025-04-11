@@ -14,7 +14,7 @@ module.exports = {
             return interaction.reply({ content: '❌ Гильдия не найдена в настройках.', ephemeral: true });
         }
 
-        const { embed, components: [row1, row2] } = buildGuildRolesMessage(guildConfig.hypixelGuildName, hypixelGuildId);
+        const { embed, components } = buildGuildRolesMessage(guildConfig.hypixelGuildName, hypixelGuildId);
 
         await interaction.update({
             embeds: [embed],
