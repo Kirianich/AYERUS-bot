@@ -1,4 +1,4 @@
-const GuildSettings = require('../../../schemas/GuildSettings');
+const GuildSettings = require('../../../models/GuildSettings');
 
 module.exports = {
   customId: /^settings_select_guild_member_role_commit:(.+)$/,
