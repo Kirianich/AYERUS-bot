@@ -17,13 +17,17 @@ module.exports = {
         console.log('Guild Name:', guildConfig?.hypixelGuildName);
         console.log('Guild ID:', hypixelGuildId);
         const { embed, components } = buildGuildRolesMessage(guildConfig);
-
-        console.log('Embed:', embed?.data);
-        console.log('Components:', components?.length);
-        
+            console.log('Embed type:', typeof embed);
+            console.log('Embed instance:', embed instanceof Object);
+            console.log('Embed content:', embed?.data || embed);
+            console.log('Components:', components?.length);
+        try{
         await interaction.update({
             embeds: [embed],
             components
         });
+        } catch (err) {
+            console.error('Interaction Update Error:', err.rawError || err);
+        }
     }
 };
