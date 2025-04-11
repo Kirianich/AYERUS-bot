@@ -15,17 +15,17 @@ module.exports = {
         }
 
         const embed = new EmbedBuilder()
-        .setTitle(`⚙️ Настройка гильдии: ${guild.hypixelGuildName}`)
+        .setTitle(`⚙️ Настройка гильдии: ${settings.linkedGuilds.hypixelGuildName}`)
         .setDescription('Выберите настройку, которую вы хотите изменить:')
         .setColor(0x5865F2);
 
     const row1 = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-            .setCustomId(`settings_configure_guild_ranks:${guild.hypixelGuildId}`)
+            .setCustomId(`settings_configure_guild_ranks:${settings.linkedGuilds.hypixelGuildId}`)
             .setLabel('🎖 Настроить ранги гильдии')
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
-            .setCustomId(`settings_set_guild_member_role:${guild.hypixelGuildId}`)
+            .setCustomId(`settings_set_guild_member_role:${settings.linkedGuilds.hypixelGuildId}`)
             .setLabel('👥 Роль участников гильдии')
             .setStyle(ButtonStyle.Secondary)
     );
