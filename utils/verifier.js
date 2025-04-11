@@ -50,22 +50,31 @@ class Verifier {
         const guildMember = guild.members.find(m => m.uuid === player.uuid);
         userGuildRank = guildMember?.rank;
 
+        console.log('🧩 Player rank from Hypixel:', userGuildRank);
         const guildConfig = settings.linkedGuilds.find(g => g.hypixelGuildId === guild.id);
         if (guildConfig) {
           isInLinkedGuild = true;
 
-          // Assign guild member role
           const memberRole = interaction.guild.roles.cache.get(guildConfig.roles.guildMemberRole);
           if (memberRole) await member.roles.add(memberRole);
 
-          // Match user's guild rank to index in guildRanks
           const rankIndex = guildConfig.guildRanks.findIndex(rank => rank === userGuildRank);
+          console.log('🔍 Matched rank index:', rankIndex);
 
           if (rankIndex !== -1) {
             const rankKey = `rank${rankIndex + 1}`;
             const rankRoleId = guildConfig.roles.rankRoles?.[rankKey];
+            console.log('🎯 Role ID to assign for rank:', rankRoleId);
+
             const rankRole = interaction.guild.roles.cache.get(rankRoleId);
-            if (rankRole) await member.roles.add(rankRole);
+            if (rankRole) {
+              await member.roles.add(rankRole);
+              console.log('✅ Guild rank role assigned');
+            } else {
+              console.warn('⚠️ Rank role not found in guild roles cache');
+            }
+          } else {
+            console.warn('⚠️ Player rank not matched in guildRanks');
           }
         }
       }
