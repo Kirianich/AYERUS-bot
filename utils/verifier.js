@@ -17,8 +17,6 @@ class Verifier {
       if (existingUser) return { error: '✅ Вы уже верифицированы!' };
 
       const player = await this.hypixel.getPlayer(username);
-      const guild = await this.hypixel.getGuild('player', username);
-
       const discordEntry = player.socialMedia.find(social => social.id === 'DISCORD');
       const linkedDiscord = discordEntry?.link;
       const currentDiscord = interaction.user.username;
@@ -44,9 +42,14 @@ class Verifier {
         if (unverifiedRole) await member.roles.remove(unverifiedRole);
       }
 
+      const guild = await this.hypixel.getGuild('player', username);
       let isInLinkedGuild = false;
+      let userGuildRank = null;
 
       if (settings.linkedGuilds && guild) {
+        const guildMember = guild.members.find(m => m.uuid === player.uuid);
+        userGuildRank = guildMember?.rank;
+
         const guildConfig = settings.linkedGuilds.find(g => g.hypixelGuildId === guild.id);
         if (guildConfig) {
           isInLinkedGuild = true;
@@ -55,11 +58,12 @@ class Verifier {
           const memberRole = interaction.guild.roles.cache.get(guildConfig.roles.guildMemberRole);
           if (memberRole) await member.roles.add(memberRole);
 
-          // Assign guild rank role if available
-          const guildRank = guild.members.find(m => m.uuid === player.uuid)?.rank;
-          const rankRoleId = guildConfig.roles.rankRoles?.[guildRank];
-          const rankRole = interaction.guild.roles.cache.get(rankRoleId);
-          if (rankRole) await member.roles.add(rankRole);
+          // Assign guild rank role if mapped
+          if (userGuildRank && guildConfig.roles.rankRoles) {
+            const rankRoleId = guildConfig.roles.rankRoles[userGuildRank];
+            const rankRole = interaction.guild.roles.cache.get(rankRoleId);
+            if (rankRole) await member.roles.add(rankRole);
+          }
         }
       }
 
@@ -75,7 +79,7 @@ class Verifier {
         hypixelUuid: player.uuid,
         hypixelRank: player.rank || "NONE",
         hypixelGuild: guild?.name || "None",
-        hypixelGuildRank: guild?.members.find(m => m.uuid === player.uuid)?.rank || "None"
+        hypixelGuildRank: userGuildRank || "None"
       });
 
       return { success: '✅ Ваш аккаунт успешно привязан!' };
