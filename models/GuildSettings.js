@@ -5,7 +5,10 @@ const GuildSettingsSchema = new mongoose.Schema({
     verifiedRole: { type: String, default: null },
     unverifiedRole: { type: String, default: null },
     guestRole: { type: String, default: null }, // Applies if user is NOT in any linked guild
+    nicknameFormat: { type: String, default: '{username}' },
+    ignoredRoles: [String],
 
+    
     linkedGuilds: [
     {
       hypixelGuildId: String,
@@ -22,7 +25,12 @@ const GuildSettingsSchema = new mongoose.Schema({
         }
       }
     }
-  ]
+  ],
+    networkRankRoles: {
+    type: Map,
+    of: String,
+    default: {}
+  }
 });
 
 module.exports = mongoose.model('GuildSettings', GuildSettingsSchema);
