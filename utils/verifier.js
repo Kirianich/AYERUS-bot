@@ -84,6 +84,22 @@ class Verifier {
         if (guestRole) await member.roles.add(guestRole);
       }
 
+      // Assign Network Rank Role
+      if (settings.networkRankRoles && player.rank) {
+        const rankRoleId = settings.networkRankRoles.get(player.rank);
+      if (rankRoleId) {
+        const rankRole = interaction.guild.roles.cache.get(rankRoleId);
+      if (rankRole) {
+        await member.roles.add(rankRole);
+        console.log(`✅ Network rank role "${player.rank}" assigned`);
+      } else {
+        console.warn(`⚠️ Network rank role ID "${rankRoleId}" not found in cache`);
+      }
+      } else {
+        console.log(`ℹ️ No role configured for network rank: ${player.rank}`);
+      }
+    }
+      
       await User.create({
         discordId,
         username,
