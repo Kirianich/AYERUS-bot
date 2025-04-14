@@ -100,18 +100,18 @@ class Verifier {
       const normalizedRankKey = rankKeyMap[player.rank] || null;
 
       // Assign Network Rank Role
-      if (settings.networkRankRoles && player.rank) {
-        const rankRoleId = settings.networkRankRoles.get(player.rank);
+      if (settings.networkRankRoles && normalizedRankKey) {
+        const rankRoleId = settings.networkRankRoles.get(normalizedRankKey);
       if (rankRoleId) {
         const rankRole = interaction.guild.roles.cache.get(rankRoleId);
       if (rankRole) {
         await member.roles.add(rankRole);
-        console.log(`✅ Network rank role "${player.rank}" assigned`);
+        console.log(`✅ Network rank role "${normalizedRankKey}" assigned`);
       } else {
         console.warn(`⚠️ Network rank role ID "${rankRoleId}" not found in cache`);
       }
       } else {
-        console.log(`ℹ️ No role configured for network rank: ${player.rank}`);
+        console.log(`ℹ️ No role configured for network rank: ${normalizedRankKey}`);
       }
     }
       
