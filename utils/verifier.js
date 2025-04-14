@@ -84,6 +84,21 @@ class Verifier {
         if (guestRole) await member.roles.add(guestRole);
       }
 
+      const rankKeyMap = {
+        'DEFAULT': 'DEFAULT',
+        'VIP': 'VIP',
+        'VIP+': 'VIP_PLUS',
+        'MVP': 'MVP',
+        'MVP+': 'MVP_PLUS',
+        'MVP++': 'MVP_PLUS_PLUS',
+        'YOUTUBE': 'YOUTUBE',
+        'ADMIN': 'ADMIN',
+        'HELPER': 'HELPER',
+        'MODERATOR': 'MODERATOR'
+      };
+
+      const normalizedRankKey = rankKeyMap[player.rank] || null;
+
       // Assign Network Rank Role
       if (settings.networkRankRoles && player.rank) {
         const rankRoleId = settings.networkRankRoles.get(player.rank);
