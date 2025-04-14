@@ -1,11 +1,11 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 const GuildSettings = require('../models/GuildSettings');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('configure-nickname')
     .setDescription('Настройка формата автоника и игнорируемых ролей')
-    .setDefaultMemberPermissions('0x0000000000000020'), // MANAGE_GUILD
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild), // MANAGE_GUILD
 
   async execute(interaction) {
     const guildId = interaction.guild.id;
