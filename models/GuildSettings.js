@@ -6,7 +6,10 @@ const GuildSettingsSchema = new mongoose.Schema({
     unverifiedRole: { type: String, default: null },
     guestRole: { type: String, default: null }, // Applies if user is NOT in any linked guild
     nicknameFormat: { type: String, default: '{username}' },
-    ignoredRoles: [String],
+    ignoredRoles: {
+      type: [String],
+      default: []
+    },
 
     
     linkedGuilds: [
