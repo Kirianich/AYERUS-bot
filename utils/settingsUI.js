@@ -15,6 +15,10 @@ async function buildInitialSettingsMessage(guild) {
         new ButtonBuilder()
             .setCustomId('settings_configure_guild_roles')
             .setLabel('🎖 Настроить роли гильдии')
+            .setStyle(ButtonStyle.Primary),
+        new ButtonBuilder()
+            .setCustomId('settings_configure:network_ranks')
+            .setLabel('🎖 Hypixel Rank роли')
             .setStyle(ButtonStyle.Primary)
     );
 
