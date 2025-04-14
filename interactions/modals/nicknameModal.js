@@ -1,4 +1,4 @@
-const GuildSettings = require('../../../models/GuildSettings');
+const GuildSettings = require('../models/GuildSettings');
 
 module.exports = {
   customId: 'nickname_modal',
