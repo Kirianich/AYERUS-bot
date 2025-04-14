@@ -1,5 +1,5 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
-const GuildSettings = require('../../../models/GuildSettings');
+const GuildSettings = require('../../models/GuildSettings');
 
 module.exports = {
   customId: 'nickname:edit_format',
