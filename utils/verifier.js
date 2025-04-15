@@ -16,6 +16,7 @@ class Verifier {
       if (existingUser) return { error: '✅ Вы уже верифицированы!' };
 
       const player = await hypixel.getPlayer(username, { guild: true });
+      const userGuild = player.guild;
       const discordEntry = player.socialMedia.find(social => social.id === 'DISCORD');
       const linkedDiscord = discordEntry?.link;
       const currentDiscord = interaction.user.username;
@@ -41,16 +42,15 @@ class Verifier {
         if (unverifiedRole) await member.roles.remove(unverifiedRole);
       }
 
-      const guild = player.guild;
       let isInLinkedGuild = false;
       let userGuildRank = null;
 
-      if (settings.linkedGuilds && guild) {
-        const guildMember = guild.members.find(m => m.uuid === player.uuid);
+      if (settings.linkedGuilds && userGuild) {
+        const guildMember = userGuild.members.find(m => m.uuid === player.uuid);
         userGuildRank = guildMember?.rank;
 
         console.log('🧩 Player rank from Hypixel:', userGuildRank);
-        const guildConfig = settings.linkedGuilds.find(g => g.hypixelGuildId === guild.id);
+        const guildConfig = settings.linkedGuilds.find(g => g.hypixelGuildId === userGuild.id);
         if (guildConfig) {
           isInLinkedGuild = true;
 
