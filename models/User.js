@@ -1,15 +1,20 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-    discordId: { type: String, required: true, unique: true },
-    username: { type: String, required: true },
-    hypixelUuid: {type: String, required: true },
-    guildId: { type: String, required: true }, //Discord Server
-    hypixelGuild: { type: String, default: "None" }, // Hypixel Guild Name
-    hypixelGuildRank: { type: String, default: "Member" }, // Rank inside the Hypixel Guild
-    hypixelRank: { type: String, default: "Default" }, // Hypixel Rank
-    skyblockLevel: { type: Number, default: 0 }, // Skyblock Level
-    skyblockSkills: { type: Object, default: {} } // Skyblock Skill Levels
+  discordId: { type: String, required: true, unique: true },
+  username: { type: String, required: true },
+  minecraftUuid: { type: String, required: true },
+
+  // Hypixel guild info
+  guild: {
+    id: { type: String, default: null },
+    name: { type: String, default: "None" },
+    rank: { type: String, default: "Member" }
+  },
+
+  networkRank: { type: String, default: "Default" }, // Hypixel Network Rank
+  skyblockLevel: { type: Number, default: 0 },
+  skyblockSkills: { type: Object, default: {} }
 });
 
 module.exports = mongoose.model('User', UserSchema);
