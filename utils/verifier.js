@@ -116,13 +116,10 @@ class Verifier {
     }
 
       const skyblock = await hypixel.getSkyblockMember(player.uuid);
-      const selectedProfile = skyblock.profiles.find(p => p.selected);
-        if (!selectedProfile) throw new Error("No selected profile found.");
+      const selectedProfile = skyblock.find(p => p.selected);
+        if (!selectedProfile) { throw new Error("No selected profile found."); }
 
-      const playerProfileData = selectedProfile.members[player.uuid];
-        if (!playerProfileData) throw new Error("Player data not found in selected profile.");
-
-      const sbLevel = playerProfileData.level;
+      const sbLevel = selectedProfile.level;
       
       // Save user to DB
     await User.findOneAndUpdate(
