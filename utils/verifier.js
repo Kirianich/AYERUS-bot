@@ -125,7 +125,7 @@ class Verifier {
         discordId: member.id,
         minecraftUuid: player.uuid,
         username,
-        networkRank,
+        networkRank: player.rank,
         guild: {
           id: userGuild?.id || null,
           name: userGuild?.name || null,
