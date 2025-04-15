@@ -116,7 +116,7 @@ class Verifier {
     }
 
       const skyblock = await hypixel.getSkyblockMember(player.uuid);
-      const selectedProfile = skyblock.find(p => p.selected);
+      const selectedProfile = skyblock.selected;
         if (!selectedProfile) { throw new Error("No selected profile found."); }
 
       const sbLevel = selectedProfile.level;
