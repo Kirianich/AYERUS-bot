@@ -96,7 +96,8 @@ class Verifier {
         'MODERATOR': 'MODERATOR'
       };
 
-      const normalizedRankKey = rankKeyMap[player.rank] || null;
+      const networkRank = player.rank
+      const normalizedRankKey = rankKeyMap[networkRank] || null;
 
       // Assign Network Rank Role
       if (settings.networkRankRoles && normalizedRankKey) {
@@ -125,7 +126,7 @@ class Verifier {
         discordId: member.id,
         minecraftUuid: player.uuid,
         username,
-        networkRank: player.rank,
+        networkRank,
         guild: {
           id: userGuild?.id || null,
           name: userGuild?.name || null,
