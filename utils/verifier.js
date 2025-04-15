@@ -117,9 +117,7 @@ class Verifier {
 
       const sbProfiles = await hypixel.getSkyblockMember(player.uuid);
       const selectedProfileId = sbProfiles.selected;
-      const selectedProfile = sbProfiles.profiles.get(selectedProfileId);
-
-      const sbLevel = selectedProfile?.members?.[player.uuid]?.level;
+      const sbLevel = sbProfiles.get(selectedProfileId).level;
       console.log("🌟 SkyBlock Level:", sbLevel);
       
       // Save user to DB
