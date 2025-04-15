@@ -116,13 +116,8 @@ class Verifier {
     }
 
       const skyblock = await hypixel.getSkyblockMember(player.uuid);
-      // Log raw profile data
-      console.log("📦 Raw SkyBlock member data:", skyblock);
-      const selectedProfile = skyblock.selected;
-      console.log("🔍 Selected Profile:", selectedProfile);
-        if (!selectedProfile) { throw new Error("No selected profile found."); }
-
-      const sbLevel = selectedProfile.level;
+      const selectedProfile = skyblock.find(profile => profile.selected);
+      const sbLevel = selectedProfile?.members?.[player.uuid]?.level;
       console.log("🌟 SkyBlock Level:", sbLevel);
       
       // Save user to DB
