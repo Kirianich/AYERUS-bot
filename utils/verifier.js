@@ -3,11 +3,9 @@ const formatNickname = require('./formatNickname');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
 const Hypixel = require('hypixel-api-reborn');
+const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 class Verifier {
-  constructor(apiKey) {
-    this.hypixel = new Hypixel.Client(apiKey);
-  }
 
   async verifyUser(interaction, username) {
     const discordId = interaction.user.id;
@@ -17,7 +15,7 @@ class Verifier {
       const existingUser = await User.findOne({ discordId });
       if (existingUser) return { error: '✅ Вы уже верифицированы!' };
 
-      const player = await this.hypixel.getPlayer(username, { guild: true });
+      const player = await hypixel.getPlayer(username, { guild: true });
       const discordEntry = player.socialMedia.find(social => social.id === 'DISCORD');
       const linkedDiscord = discordEntry?.link;
       const currentDiscord = interaction.user.username;
@@ -116,7 +114,7 @@ class Verifier {
       }
     }
 
-      const profiles = await Hypixel.getSkyblockProfiles(username);
+      const profiles = await hypixel.getSkyblockProfiles(username);
       const mainProfile = profiles.find(profile => profile.selected);
       const sbLevel = mainProfile?.leveling?.skyblockLevel || null;
       
