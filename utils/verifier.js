@@ -17,7 +17,7 @@ class Verifier {
       const existingUser = await User.findOne({ discordId });
       if (existingUser) return { error: '✅ Вы уже верифицированы!' };
 
-      const player = await this.hypixel.getPlayer(username);
+      const player = await this.hypixel.getPlayer(username, { guild: true });
       const discordEntry = player.socialMedia.find(social => social.id === 'DISCORD');
       const linkedDiscord = discordEntry?.link;
       const currentDiscord = interaction.user.username;
@@ -43,7 +43,7 @@ class Verifier {
         if (unverifiedRole) await member.roles.remove(unverifiedRole);
       }
 
-      const guild = await this.hypixel.getGuild('player', username);
+      const guild = player.guild;
       let isInLinkedGuild = false;
       let userGuildRank = null;
 
@@ -115,13 +115,17 @@ class Verifier {
         console.log(`ℹ️ No role configured for network rank: ${normalizedRankKey}`);
       }
     }
+
+      const profiles = await hypixel.getSkyblockProfiles(username);
+      const mainProfile = profiles.find(profile => profile.selected);
+      const sbLevel = mainProfile?.leveling?.skyblockLevel || null;
       
       // Save user to DB
     await User.findOneAndUpdate(
       { discordId: member.id },
       {
         discordId: member.id,
-        minecraftUuid: uuid,
+        minecraftUuid: player.uuid,
         username,
         networkRank,
         guild: {
