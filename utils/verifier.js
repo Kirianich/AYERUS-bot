@@ -2,6 +2,7 @@
 const formatNickname = require('./formatNickname');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
+const Hypixel = require('hypixel-api-reborn');
 
 class Verifier {
   constructor(apiKey) {
