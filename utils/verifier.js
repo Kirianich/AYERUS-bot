@@ -120,16 +120,16 @@ class Verifier {
       let sbLevel = null;
       for (const [profileId, profile] of sbProfiles) {
         if (profile.selected) {
-          sbLevel = profile.level;
+          sbLevel = Math.floor(profile.level);
           console.log("✅ Selected Profile ID:", profileId);
           console.log("🌟 SkyBlock Level:", sbLevel);
           break;
         }
       }
 
-if (sbLevel === null) {
-  console.warn("⚠️ No selected SkyBlock profile found.");
-}
+      if (sbLevel === null) {
+        console.warn("⚠️ No selected SkyBlock profile found.");
+      }
       
       // Save user to DB
     await User.findOneAndUpdate(
