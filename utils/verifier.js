@@ -116,7 +116,7 @@ class Verifier {
       }
     }
 
-      const profiles = await hypixel.getSkyblockProfiles(username);
+      const profiles = await Hypixel.getSkyblockProfiles(username);
       const mainProfile = profiles.find(profile => profile.selected);
       const sbLevel = mainProfile?.leveling?.skyblockLevel || null;
       
