@@ -137,6 +137,7 @@ class Verifier {
     );
 
     // Update nickname
+    const ignored = member.roles.cache.some(role => settings.ignoredRoles.includes(role.id));
     if (settings.nicknameFormat && member.manageable && !ignored) {
       const formattedNickname = formatNickname(settings.nicknameFormat, {
         username,
