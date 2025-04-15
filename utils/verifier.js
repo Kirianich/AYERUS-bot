@@ -115,8 +115,11 @@ class Verifier {
       }
     }
 
-      const skyblock = await hypixel.getSkyblockMember(player.uuid).selected;
-      const sbLevel = skyblock.level;
+      const sbProfiles = await hypixel.getSkyblockMember(player.uuid);
+      const selectedProfileId = sbProfiles.selected;
+      const selectedProfile = sbProfiles.profiles.get(selectedProfileId);
+
+      const sbLevel = selectedProfile?.members?.[player.uuid]?.level;
       console.log("🌟 SkyBlock Level:", sbLevel);
       
       // Save user to DB
