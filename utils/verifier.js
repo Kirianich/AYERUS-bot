@@ -1,7 +1,7 @@
 // utils/Verifier.js
+const formatNickname = require('./formatNickname');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
-const Hypixel = require('hypixel-api-reborn');
 
 class Verifier {
   constructor(apiKey) {
@@ -115,15 +115,39 @@ class Verifier {
       }
     }
       
-      await User.create({
-        discordId,
+      // Save user to DB
+    await User.findOneAndUpdate(
+      { discordId: member.id },
+      {
+        discordId: member.id,
+        minecraftUuid: uuid,
         username,
-        guildId,
-        hypixelUuid: player.uuid,
-        hypixelRank: player.rank || "NONE",
-        hypixelGuild: guild?.name || "None",
-        hypixelGuildRank: userGuildRank || "None"
+        networkRank,
+        guild: {
+          id: userGuild?.id || null,
+          name: userGuild?.name || null,
+          rank: userGuildRank
+        },
+        skyblockLevel: sbLevel
+      },
+      { upsert: true }
+    );
+
+    // Update nickname
+    if (settings.nicknameFormat && member.manageable && !ignored) {
+      const formattedNickname = formatNickname(settings.nicknameFormat, {
+        username,
+        networkRank,
+        sbLevel
       });
+      try {
+        await member.setNickname(formattedNickname);
+        console.log(`📝 Updated nickname for ${member.user.tag}: ${formattedNickname}`);
+      } catch (err) {
+        console.warn(`⚠️ Failed to update nickname:`, err.message);
+      }
+    }
+
 
       return { success: '✅ Ваш аккаунт успешно привязан!' };
     } catch (error) {
