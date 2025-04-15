@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const GuildSettings = require('../models/GuildSettings');
+const Hypixel = require('hypixel-api-reborn');
 const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 
