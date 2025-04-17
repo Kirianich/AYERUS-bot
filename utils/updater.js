@@ -9,15 +9,16 @@ const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 class Updater {
 
   async updateUser(interaction) {
+    await interaction.deferReply({ ephemeral: true });
     const discordId = interaction.user.id;
     const guildId = interaction.guild.id;
 
     const member = interaction.guild.members.cache.get(discordId);
-    if (!member) return interaction.reply({ content: '❌ Пользователь не найден на сервере.', ephemeral: true });
+    if (!member) return interaction.editReply({ content: '❌ Пользователь не найден на сервере.', ephemeral: true });
 
     const userData = await User.findOne({ discordId });
     if (!userData || !userData.minecraftUuid) {
-      return interaction.reply({ content: '❌ Вы не верифицированы. Используйте соответствующую кнопку.', ephemeral: true });
+      return interaction.editReply({ content: '❌ Вы не верифицированы. Используйте соответствующую кнопку.', ephemeral: true });
     }
 
     try {
@@ -82,11 +83,11 @@ class Updater {
 
       await Promise.all(updates);
 
-      return interaction.reply({ content: '✅ Данные обновлены.', ephemeral: true });
+      return interaction.editReply({ content: '✅ Данные обновлены.', ephemeral: true });
 
     } catch (error) {
       console.error('❌ Error updating user:', error);
-      return interaction.reply({ content: '⚠️ Не удалось обновить данные. Попробуйте позже.', ephemeral: true });
+      return interaction.editReply({ content: '⚠️ Не удалось обновить данные. Попробуйте позже.', ephemeral: true });
     }
   }
 }
