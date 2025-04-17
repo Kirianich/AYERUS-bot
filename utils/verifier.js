@@ -1,5 +1,5 @@
 // utils/Verifier.js
-const { getSkyblockLevelRole, getAllSkyblockLevelRoles } = require('./skyblockLevelRoles');
+const { getSkyblockLevelRole, getAllSkyblockLevelRoles } = require('./skyblockRoles');
 const formatNickname = require('./formatNickname');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
