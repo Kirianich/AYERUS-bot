@@ -1,4 +1,4 @@
-const { getSkyblockLevelRole, getAllSkyblockLevelRoles } = require('./skyblockRoles');
+const { applySkyblockLevelRole, skyblockLevelRole } = require('./skyblockRoles');
 const Hypixel = require('hypixel-api-reborn');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
