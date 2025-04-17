@@ -1,4 +1,4 @@
-const { applySkyblockLevelRole, skyblockLevelRole } = require('./skyblockRoles');
+const { applySkyblockLevelRole } = require('./skyblockRoles');
 const Hypixel = require('hypixel-api-reborn');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
@@ -45,29 +45,6 @@ class Updater {
 
       await User.findOneAndUpdate({ discordId }, updatedFields);
 
-      // SkyBlock Level Role Assignment
-      if (sbLevel !== null) {
-        const roleId = skyblockLevelRole(sbLevel);
-        const allBracketRoles = skyblockLevelRole();
-
-        // Remove any previously assigned bracket role
-        for (const existingRoleId of allBracketRoles) {
-          if (member.roles.cache.has(existingRoleId)) {
-            await member.roles.remove(existingRoleId);
-          }
-        }
-
-        // Assign new role
-        const levelRole = guild.roles.cache.get(roleId);
-        if (levelRole) {
-          await member.roles.add(levelRole);
-          console.log(`📊 Updated SkyBlock level role: ${roleId}`);
-        } else {
-          console.warn(`⚠️ SkyBlock level role ID "${roleId}" not found in cache`);
-        }
-      }
-
-
       // Now handle role/nickname updates
       const settings = await GuildSettings.findOne({ discordGuildId: guildId });
       if (!settings) throw new Error('⚙️ Настройки сервера не найдены');
@@ -88,6 +65,8 @@ class Updater {
         if (guildMemberRole) updates.push(member.roles.add(guildMemberRole));
         if (rankRoleId) updates.push(member.roles.add(rankRoleId));
       }
+
+      await applySkyblockLevelRole(member, sbLevel);
 
       // Nickname
       const nickname = formatNickname(settings.nicknameFormat, {
