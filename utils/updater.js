@@ -7,19 +7,10 @@ const formatNickname = require('./formatNickname');
 const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 class Updater {
-  constructor() {
-    this.cooldowns = new Map();
-  }
 
   async updateUser(interaction) {
     const discordId = interaction.user.id;
     const guildId = interaction.guild.id;
-
-    // Cooldown check (5 minutes)
-    if (this.cooldowns.has(discordId)) {
-      const remaining = ((this.cooldowns.get(discordId) - Date.now()) / 60000).toFixed(1);
-      return interaction.reply({ content: `⏳ Подождите еще ${remaining} минут до следующего обновления.`, ephemeral: true });
-    }
 
     const member = interaction.guild.members.cache.get(discordId);
     if (!member) return interaction.reply({ content: '❌ Пользователь не найден на сервере.', ephemeral: true });
@@ -89,7 +80,6 @@ class Updater {
 
       await Promise.all(updates);
 
-      this.cooldowns.set(discordId, Date.now() + 5 * 60 * 1000);
       return interaction.reply({ content: '✅ Данные обновлены.', ephemeral: true });
 
     } catch (error) {
