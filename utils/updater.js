@@ -4,7 +4,7 @@ const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
 const formatNickname = require('./formatNickname');
 
-const hypixel = new Hypixel(process.env.HYPIXEL_API_KEY);
+const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 class Updater {
   static cooldowns = new Map();
