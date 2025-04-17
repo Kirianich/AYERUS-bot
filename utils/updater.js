@@ -76,7 +76,7 @@ class Updater {
       }
 
       // Nickname
-      const nickname = formatNickname(settings.nicknameFormat?.format, {
+      const nickname = formatNickname(settings.nicknameFormat, {
         username,
         networkRank,
         sbLevel
