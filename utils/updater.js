@@ -32,7 +32,7 @@ class Updater {
     try {
       const player = await hypixel.getPlayer(userData.minecraftUuid, { guild: true });
       const networkRank = player.rank || 'NONE';
-
+      const username = player.nickname;
       const guild = player.guild || null;
       const userGuildRank = guild?.members?.find(m => m.uuid === player.uuid)?.rank || null;
 
@@ -76,7 +76,7 @@ class Updater {
 
       // Nickname
       const nickname = formatNickname(settings.nicknameSettings?.format, {
-        username: player.nickname,
+        username,
         networkRank,
         skyblockLevel: sbLevel
       });
