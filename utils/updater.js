@@ -24,7 +24,7 @@ class Updater {
 
     const userData = await User.findOne({ discordId });
     if (!userData || !userData.minecraftUuid) {
-      return interaction.reply({ content: '❌ Вы не верифицированы. Используйте команду /verify.', ephemeral: true });
+      return interaction.reply({ content: '❌ Вы не верифицированы. Используйте соответствующую кнопку.', ephemeral: true });
     }
 
     try {
