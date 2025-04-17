@@ -1,6 +1,6 @@
 
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
-const { Updater } = require('../../utils/updater');
+const Updater = require('../../utils/updater');
 
 module.exports = {
   customId: 'update_data_button',
