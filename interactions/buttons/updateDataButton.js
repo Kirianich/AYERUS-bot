@@ -18,11 +18,11 @@ module.exports = {
     const updater = new Updater(process.env.HYPIXEL_API_KEY);
     const result = await updater.updateUser(interaction);
     if (result.error) {
-      return interaction.reply({ content: result.error, ephemeral: true });
+      return interaction.editReply({ content: result.error, ephemeral: true });
     } else {
       // Set cooldown for 5 minutes
       cooldowns.set(discordId, Date.now() + 5 * 60 * 1000);
-      return interaction.reply({ content: result.success, ephemeral: true });
+      return interaction.editReply({ content: result.success, ephemeral: true });
     }
   }
 };
