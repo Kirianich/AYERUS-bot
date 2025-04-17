@@ -33,7 +33,7 @@ module.exports = {
                 .setLabel('✅ Привязать')
                 .setStyle(ButtonStyle.Success),
              new ButtonBuilder()
-                .setCustomId('update_data_button')
+                .setCustomId('update_user_data')
                 .setLabel('🔄 Обновить')
                 .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
