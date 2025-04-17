@@ -1,20 +1,16 @@
-
-const { ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const Updater = require('../../utils/updater');
+require('dotenv').config();
 
 module.exports = {
-  customId: 'update_data_button',
+  customId: 'update_user_data',
   async execute(interaction) {
-    try {
-      const updater = new Updater(interaction);
-      await updater.process();
-    } catch (error) {
-      console.error('Update Error:', error);
-      await interaction.reply({
-        content: '❌ Ошибка при обновлении данных. Попробуйте позже.',
-        ephemeral: true
-      });
-    }
-  },
-};
+    const updater = new Updater(process.env.HYPIXEL_API_KEY);
 
+    const result = await updater.updateUserData(interaction);
+    if (result.error) {
+      return interaction.editReply({ content: result.error });
+    } else {
+      return interaction.editReply({ content: result.success });
+    }
+  }
+};
