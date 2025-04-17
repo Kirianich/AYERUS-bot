@@ -43,6 +43,7 @@ class Updater {
 
       const updatedFields = {
         networkRank,
+        username,
         guild: {
           id: guild?.id || null,
           name: guild?.name || null,
