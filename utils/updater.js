@@ -7,9 +7,11 @@ const formatNickname = require('./formatNickname');
 const hypixel = new Hypixel.Client(process.env.HYPIXEL_API_KEY);
 
 class Updater {
-  static cooldowns = new Map();
+  constructor() {
+    this.cooldowns = new Map();
+  }
 
-  static async updateUser(interaction) {
+  async updateUser(interaction) {
     const discordId = interaction.user.id;
     const guildId = interaction.guild.id;
 
