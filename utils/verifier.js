@@ -1,4 +1,5 @@
 // utils/Verifier.js
+const { getSkyblockLevelRole, getAllSkyblockLevelRoles } = require('./skyblockLevelRoles');
 const formatNickname = require('./formatNickname');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
@@ -127,6 +128,30 @@ class Verifier {
         }
       }
 
+      // Assign Skyblock Level Role using predefined brackets
+      if (sbLevel !== null) {
+        const roleId = getSkyblockLevelRole(sbLevel);
+        const allBracketRoles = getAllSkyblockLevelRoles();
+
+        // Remove any previously assigned bracket role
+        for (const existingRoleId of allBracketRoles) {
+          if (member.roles.cache.has(existingRoleId)) {
+            await member.roles.remove(existingRoleId);
+          }
+        }
+
+
+    // Add new bracket role
+    const levelRole = interaction.guild.roles.cache.get(roleId);
+      if (levelRole) {
+        await member.roles.add(levelRole);
+        console.log(`📊 Assigned SkyBlock level role: ${roleId}`);
+      } else {
+        console.warn(`⚠️ SkyBlock level role ID "${roleId}" not found in cache`);
+      }
+    }
+
+      
       if (sbLevel === null) {
         console.warn("⚠️ No selected SkyBlock profile found.");
       }
