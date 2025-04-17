@@ -78,7 +78,7 @@ class Updater {
       const nickname = formatNickname(settings.nicknameSettings?.format, {
         username,
         networkRank,
-        skyblockLevel: sbLevel
+        sbLevel
       });
 
       const shouldChangeNick = !member.roles.cache.some(role => settings.nicknameSettings?.ignoredRoles?.includes(role.id));
