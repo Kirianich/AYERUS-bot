@@ -26,12 +26,16 @@ module.exports = {
             .setDescription('Нажмите на кнопку снизу, чтобы привязать Ваш Майнкрафт аккаунт.')
             .setColor(0x5865F2);
 
-        // Create buttons
+        // Create buttons 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('verify_button')
                 .setLabel('✅ Привязать')
                 .setStyle(ButtonStyle.Success),
+             new ButtonBuilder()
+                .setCustomId('update_data_button')
+                .setLabel('🔄 Обновить')
+                .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
                 .setCustomId('howto_button')
                 .setLabel('📖 Помощь')
