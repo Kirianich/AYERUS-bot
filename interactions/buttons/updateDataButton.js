@@ -6,7 +6,7 @@ module.exports = {
   async execute(interaction) {
     const updater = new Updater(process.env.HYPIXEL_API_KEY);
 
-    const result = await updater.updateUserData(interaction);
+    const result = await updater.updateUser(interaction);
     if (result.error) {
       return interaction.editReply({ content: result.error });
     } else {
