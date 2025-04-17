@@ -47,8 +47,8 @@ class Updater {
 
       // SkyBlock Level Role Assignment
       if (sbLevel !== null) {
-        const roleId = getSkyblockLevelRole(sbLevel);
-        const allBracketRoles = getAllSkyblockLevelRoles();
+        const roleId = skyblockLevelRole(sbLevel);
+        const allBracketRoles = skyblockLevelRole();
 
         // Remove any previously assigned bracket role
         for (const existingRoleId of allBracketRoles) {
