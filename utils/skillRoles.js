@@ -22,17 +22,15 @@ const skillBrackets = {
   ],
 };
 
-function getSkillBracket(skill, level) {
-  const brackets = skillBrackets[skill];
-  return brackets.find(bracket => level >= bracket.min && level <= bracket.max);
-}
+  
 
 async function assignSkillRoles(guild, member, skills) {
+  const brackets = skillBrackets.find(bracket => level >= bracket.min && level <= bracket.max);
   for (const [skill, level] of Object.entries(skills)) {
     const bracket = getSkillBracket(skill, level);
     if (!bracket) continue;
 
-    const roleToAdd = levelBracket.roleId;
+    const roleToAdd = brackets.roleId;
     if (!roleToAdd) continue;
 
     const allSkillRoleIds = skillBrackets[skill].map(b => b.roleId);
