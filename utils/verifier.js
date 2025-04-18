@@ -119,11 +119,19 @@ class Verifier {
       const sbProfiles = await hypixel.getSkyblockMember(player.uuid);
 
       let sbLevel = null;
+      let skills = {};
       for (const [profileId, profile] of sbProfiles) {
         if (profile.selected) {
           sbLevel = Math.floor(profile.level);
           console.log("✅ Selected Profile ID:", profileId);
           console.log("🌟 SkyBlock Level:", sbLevel);
+          skills = {
+            farming: Math.floor(profile.skills.farming? || 0),
+            mining: Math.floor(profile.skills.mining? || 0),
+            combat: Math.floor(profile.skills.combat? || 0),
+            fishing: Math.floor(profile.skills.fishing? || 0),
+          };
+          console.log("🎯 Parsed skills:", skills);
           break;
         }
       }
@@ -147,7 +155,8 @@ class Verifier {
           name: userGuild?.name || null,
           rank: userGuildRank
         },
-        skyblockLevel: sbLevel
+        skyblockLevel: sbLevel,
+        skills
       },
       { upsert: true }
     );
