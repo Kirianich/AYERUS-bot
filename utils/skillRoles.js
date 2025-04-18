@@ -32,7 +32,7 @@ async function assignSkillRoles(guild, member, skills) {
     const bracket = getSkillBracket(skill, level);
     if (!bracket) continue;
 
-    const roleToAdd = guild.roles.cache.get(bracket.roleId);
+    const roleToAdd = levelBracket.roleId;
     if (!roleToAdd) continue;
 
     const allSkillRoleIds = skillBrackets[skill].map(b => b.roleId);
