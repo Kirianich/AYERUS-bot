@@ -1,5 +1,6 @@
 // utils/Verifier.js
 const { applySkyblockLevelRole } = require('./skyblockRoles');
+const { assignSkillRoles } = require('./skillRoles');
 const formatNickname = require('./formatNickname');
 const User = require('../models/User');
 const GuildSettings = require('../models/GuildSettings');
@@ -136,8 +137,9 @@ class Verifier {
         }
       }
 
-     await applySkyblockLevelRole(member, sbLevel);
-      
+      await applySkyblockLevelRole(member, sbLevel);
+      await assignSkillRoles(interaction.guild, member, skills);     
+ 
       if (sbLevel === null) {
         console.warn("⚠️ No selected SkyBlock profile found.");
       }
