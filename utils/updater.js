@@ -30,8 +30,23 @@ class Updater {
 
       // Skyblock level from selected profile
       const sbProfiles = await hypixel.getSkyblockMember(player.uuid);
-      const selected = [...sbProfiles.values()].find(p => p.selected);
-      const sbLevel = Math.floor(selected?.level || 0);
+      let sbLevel = null;
+      let skills = {};
+        for (const [profileId, profile] of sbProfiles) {
+          if (profile.selected) {
+            sbLevel = Math.floor(profile.level);
+            console.log("✅ Selected Profile ID:", profileId);
+            console.log("🌟 SkyBlock Level:", sbLevel);
+            skills = {
+              farming: Math.floor(profile.skills.farming?.level || 0),
+              mining: Math.floor(profile.skills.mining?.level || 0),
+              combat: Math.floor(profile.skills.combat?.level || 0),
+              fishing: Math.floor(profile.skills.fishing?.level || 0),
+            };
+            console.log("🎯 Updated skills:", skills);
+            break;
+          }
+        }
 
       const updatedFields = {
         networkRank,
@@ -41,7 +56,8 @@ class Updater {
           name: guild?.name || null,
           rank: userGuildRank
         },
-        skyblockLevel: sbLevel
+        skyblockLevel: sbLevel,
+        skills
       };
 
       await User.findOneAndUpdate({ discordId }, updatedFields);
