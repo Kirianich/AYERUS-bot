@@ -14,7 +14,12 @@ const UserSchema = new mongoose.Schema({
 
   networkRank: { type: String, default: "Default" }, // Hypixel Network Rank
   skyblockLevel: { type: Number, default: 0 },
-  skyblockSkills: { type: Object, default: {} }
+  skills: {
+    farming: Number,
+    mining: Number,
+    combat: Number,
+    fishing: Number
+  }
 });
 
 module.exports = mongoose.model('User', UserSchema);
