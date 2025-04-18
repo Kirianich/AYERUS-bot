@@ -28,11 +28,32 @@ module.exports = {
     ]
   },
 
-  getSkillRole(skillName, level) {
+   getSkillRole(skillName, level) {
     const roleMap = this.skillRoleMap[skillName];
     if (!roleMap) return null;
 
     const match = roleMap.find(bracket => level >= bracket.min && level <= bracket.max);
     return match ? match.roleId : null;
+  },
+
+  async applySkillRole(member, skillName, level) {
+    const newRoleId = this.getSkillRole(skillName, level);
+    const roleMap = this.skillRoleMap[skillName];
+    if (!newRoleId || !roleMap) return;
+
+    const allBracketRoleIds = roleMap.map(bracket => bracket.roleId);
+
+    // Remove all skill roles in this category
+    const rolesToRemove = member.roles.cache.filter(role => allBracketRoleIds.includes(role.id));
+    for (const [_, role] of rolesToRemove) {
+      await member.roles.remove(role).catch(() => {});
+    }
+
+    // Add the new one
+    const newRole = member.guild.roles.cache.get(newRoleId);
+    if (newRole) {
+      await member.roles.add(newRole).catch(() => {});
+      console.log(`🔁 Updated ${skillName} role to ${newRole.name} for ${member.user.tag}`);
+    }
   }
 };
