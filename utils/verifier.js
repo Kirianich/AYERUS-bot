@@ -125,12 +125,7 @@ class Verifier {
           sbLevel = Math.floor(profile.level);
           console.log("✅ Selected Profile ID:", profileId);
           console.log("🌟 SkyBlock Level:", sbLevel);
-          skills = {
-            farming: Math.floor(profile.skills.farming),
-            mining: Math.floor(profile.skills.mining),
-            combat: Math.floor(profile.skills.combat),
-            fishing: Math.floor(profile.skills.fishing),
-          };
+          skills = profile.skills;
           console.log("🎯 Parsed skills:", skills);
           break;
         }
