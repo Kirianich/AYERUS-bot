@@ -24,25 +24,32 @@ const skillBrackets = {
 
   
 
-async function assignSkillRoles(guild, member, skills) {
-  const brackets = skillBrackets.find(bracket => level >= bracket.min && level <= bracket.max);
+function getSkillBracket(skill, level) {
+  const brackets = skillBrackets[skill];
+  return brackets?.find(bracket => level >= bracket.min && level <= bracket.max);
+}
+
+async function assignSkillRoles(member, skills) {
   for (const [skill, level] of Object.entries(skills)) {
     const bracket = getSkillBracket(skill, level);
     if (!bracket) continue;
 
-    const roleToAdd = brackets.roleId;
-    if (!roleToAdd) continue;
+    const allRoleIds = skillBrackets[skill].map(b => b.roleId);
+    const currentRoles = member.roles.cache.filter(role => allRoleIds.includes(role.id));
 
-    const allSkillRoleIds = skillBrackets[skill].map(b => b.roleId);
-    const currentSkillRoles = member.roles.cache.filter(r => allSkillRoleIds.includes(r.id));
+    try {
+      // Remove all roles for that skill
+      for (const role of currentRoles.values()) {
+        await member.roles.remove(role);
+      }
 
-    for (const role of currentSkillRoles.values()) {
-      await member.roles.remove(role);
-    }
-
-    if (!member.roles.cache.has(roleToAdd.id)) {
-      await member.roles.add(roleToAdd);
-      console.log(`✅ Assigned ${skill} role ${roleToAdd.name} for level ${level}`);
+      // Add new skill role directly by ID
+      if (!member.roles.cache.has(bracket.roleId)) {
+        await member.roles.add(bracket.roleId);
+        console.log(`✅ Assigned ${skill} role ID ${bracket.roleId} for level ${level}`);
+      }
+    } catch (err) {
+      console.error(`❌ Error assigning ${skill} role:`, err);
     }
   }
 }
