@@ -84,6 +84,7 @@ class Updater {
       }
 
       await applySkyblockLevelRole(member, sbLevel);
+      await assignSkillRoles(member, skills);
 
       // Nickname
       const nickname = formatNickname(settings.nicknameFormat, {
