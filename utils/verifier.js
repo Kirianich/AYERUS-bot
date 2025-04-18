@@ -138,7 +138,7 @@ class Verifier {
       }
 
       await applySkyblockLevelRole(member, sbLevel);
-      await assignSkillRoles(interaction.guild, member, skills);     
+      await assignSkillRoles(member, skills);   
  
       if (sbLevel === null) {
         console.warn("⚠️ No selected SkyBlock profile found.");
